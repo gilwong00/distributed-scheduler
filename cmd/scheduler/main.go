@@ -2,8 +2,9 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"log"
 
+	schedulerservice "github.com/gilwong00/task-runner/internal/scheduler"
 	"github.com/gilwong00/task-runner/internal/taskdb"
 )
 
@@ -18,5 +19,8 @@ func main() {
 	store := taskdb.NewStore(
 		postgresConnection.NewDB(),
 	)
-	fmt.Println(">>>> store", store)
+	schedulerservice := schedulerservice.NewSchedulerService(5000, store)
+	if err := schedulerservice.Start(); err != nil {
+		log.Fatalf("Error while starting server: %+v", err)
+	}
 }

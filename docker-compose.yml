@@ -2,9 +2,13 @@ version: '3'
 
 services:
   postgres:
-    image: postgres:16.1
     container_name: task_pg
+    build:
+      context: .
+      dockerfile: postgres-dockerfile
     env_file:
       - ./docker.env
+    volumes:
+      - ./data:/var/lib/postgresql/data
     ports:
       - '5432:5432'

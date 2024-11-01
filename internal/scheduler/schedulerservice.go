@@ -1,4 +1,4 @@
-package scheduler
+package schedulerservice
 
 import (
 	"github.com/gilwong00/task-runner/internal/taskdb"
@@ -14,4 +14,9 @@ func NewSchedulerService(port int, store *taskdb.Store) *SchedulerService {
 		Port:  port,
 		Store: store,
 	}
+}
+
+func (s *SchedulerService) Start() error {
+	// start http service
+	return nil
 }
