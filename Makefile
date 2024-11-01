@@ -36,3 +36,8 @@ migratedown:
 
 migratedownlast:
 	migrate -path internal/taskdb/migrations -database "$(DB_URL)" down 1
+
+
+.PHONY: startscheduler
+startscheduler:
+	cd cmd && cd ./scheduler && go run main.go

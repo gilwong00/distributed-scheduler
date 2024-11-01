@@ -11,7 +11,8 @@ import (
 func main() {
 	// TODO: get configs
 	ctx := context.Background()
-	postgresConnection, err := taskdb.NewDB(ctx, nil)
+	config := taskdb.NewConfig("", "", "", 0, "task", 0)
+	postgresConnection, err := taskdb.NewDB(ctx, config)
 	if err != nil {
 		panic(err)
 	}
@@ -19,8 +20,8 @@ func main() {
 	store := taskdb.NewStore(
 		postgresConnection.NewDB(),
 	)
-	schedulerservice := schedulerservice.NewSchedulerService(5000, store)
-	if err := schedulerservice.Start(); err != nil {
+	schedulerservice := schedulerservice.NewSchedulerService(5001, store)
+	if err := schedulerservice.StartHttpServer(); err != nil {
 		log.Fatalf("Error while starting server: %+v", err)
 	}
 }

@@ -28,9 +28,16 @@ func (c *Connection) NewDB() *sql.DB {
 
 // NewPoolConnection returns a new Connection. This is the main database connection
 // and is also safe for concurrent connections.
-func NewPoolConnection(ctx context.Context, host string, port uint16, options ...PoolOptions) (*Connection, error) {
+func NewPoolConnection(
+	ctx context.Context,
+	user string,
+	password string,
+	host string,
+	port uint16,
+	options ...PoolOptions,
+) (*Connection, error) {
 	config, err := pgxpool.ParseConfig(
-		fmt.Sprintf("postgres://%s:%d", host, port),
+		fmt.Sprintf("postgres://%s:%s@%s:%d/task?sslmode=disable", user, password, host, port),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse postgres config: invalid host or port: %w", err)
