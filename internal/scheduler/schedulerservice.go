@@ -13,23 +13,6 @@ type SchedulerService struct {
 	store *taskdb.Store
 }
 
-// TODO: move this to a models.go file possibly
-type TaskResponse struct {
-	TaskID      string `json:"taskId"`
-	Command     string `json:"command"`
-	ScheduledAt string `json:"scheduledAt,omitempty"`
-	PickedAt    string `json:"pickedAt,omitempty"`
-	StartedAt   string `json:"startedAt,omitempty"`
-	CompletedAt string `json:"completedAt,omitempty"`
-	FailedAt    string `json:"failedAt,omitempty"`
-}
-
-type ScheduleTaskPayload struct {
-	Command     string `json:"command"`
-	ScheduledAt string `json:"scheduledAt"` // ISO 8601 format
-
-}
-
 func NewSchedulerService(port int, store *taskdb.Store) *SchedulerService {
 	return &SchedulerService{
 		Port:  port,

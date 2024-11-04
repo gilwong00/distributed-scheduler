@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"github.com/gilwong00/task-runner/internal/worker"
+	workerservice "github.com/gilwong00/task-runner/internal/worker"
 )
 
 var (
@@ -13,6 +13,6 @@ var (
 
 func main() {
 	flag.Parse()
-	worker := worker.NewServer(*workerPort, *coordinatorPort)
-	worker.Start()
+	workerService := workerservice.NewService(*workerPort, *coordinatorPort)
+	workerService.Start()
 }

@@ -25,18 +25,28 @@ migration:
 dockerup:
 		docker compose --verbose -p task -f ./docker-compose.yml up -d
 
+.PHONY: migrateup
 migrateup:
 	migrate -path internal/taskdb/migrations -database "$(DB_URL)" up
 
+.PHONY: migrateuplatest
 migrateuplatest:
 	migrate -path internal/taskdb/migrations -database "$(DB_URL)" up 1
 
+.PHONY: migratedown
 migratedown:
 	migrate -path internal/taskdb/migrations -database "$(DB_URL)" down
 
+.PHONY: migratedownlast
 migratedownlast:
 	migrate -path internal/taskdb/migrations -database "$(DB_URL)" down 1
 
+.PHONY: proto
+proto:
+	rm -f proto/gen/*.go
+	protoc --proto_path=proto --go_out=proto/gen --go_opt=paths=source_relative \
+	--go-grpc_out=proto/gen --go-grpc_opt=paths=source_relative \
+	proto/*.proto
 
 .PHONY: startscheduler
 startscheduler:

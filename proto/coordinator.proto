@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package coordinatorproto;
 
-option go_package = "github.com/gilwong00/task-runner/pkg/coordinatorproto";
+option go_package = "github.com/gilwong00/task-runner/pkg/taskproto";
 
 service CoordinatorService {
 }

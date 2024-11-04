@@ -1,4 +1,4 @@
-package worker
+package workerservice
 
 import (
 	"context"
@@ -11,7 +11,7 @@ const (
 	maxWorkerPoolSize = 5 // Number of workers in the pool
 )
 
-type WorkerServer struct {
+type WorkerService struct {
 	ctx             context.Context
 	workerPort      string
 	coordinatorPort string
@@ -19,9 +19,9 @@ type WorkerServer struct {
 	wg              sync.WaitGroup // WaitGroup to wait for all goroutines to finish
 }
 
-func NewServer(workerPort string, coordinatorPort string) *WorkerServer {
+func NewService(workerPort string, coordinatorPort string) *WorkerService {
 	ctx, cancel := context.WithCancel(context.Background())
-	return &WorkerServer{
+	return &WorkerService{
 		workerPort:      workerPort,
 		coordinatorPort: coordinatorPort,
 		ctx:             ctx,
@@ -29,13 +29,13 @@ func NewServer(workerPort string, coordinatorPort string) *WorkerServer {
 	}
 }
 
-func (s *WorkerServer) Start() error {
+func (s *WorkerService) Start() error {
 	s.startWorkerPool(maxWorkerPoolSize)
 	return nil
 }
 
 // startWorkerPool starts a pool of worker goroutines.
-func (w *WorkerServer) startWorkerPool(totalWorkers int) {
+func (w *WorkerService) startWorkerPool(totalWorkers int) {
 	for range totalWorkers {
 		w.wg.Add(1)
 		go w.worker()
@@ -43,6 +43,6 @@ func (w *WorkerServer) startWorkerPool(totalWorkers int) {
 }
 
 // worker is the function run by each worker goroutine.
-func (w *WorkerServer) worker() {
+func (w *WorkerService) worker() {
 	defer w.wg.Done() // Signal this worker is done when the function returns.
 }
