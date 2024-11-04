@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package workerproto;
+
+option go_package = "github.com/gilwong00/task-runner/pkg/workerproto";
+
+enum TaskStatus {
+	UNSPECIFIED = 0;
+  QUEUED = 1;
+  STARTED = 2;
+  COMPLETE = 3;
+  FAILED = 4;
+}
+
+
+// The worker service definition.
+service WorkerService {
+  // Sends a task to the worker
+  rpc SubmitTask (TaskRequest) returns (TaskResponse) {}
+}
+
+message TaskRequest {}
+
+message TaskResponse {}

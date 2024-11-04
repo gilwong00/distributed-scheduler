@@ -1,61 +1,58 @@
 package schedulerservice
 
 import (
-	"context"
+	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
 
 	"github.com/gilwong00/task-runner/internal/taskdb"
 )
 
 type SchedulerService struct {
 	Port  int
-	Store *taskdb.Store
+	store *taskdb.Store
+}
+
+// TODO: move this to a models.go file possibly
+type TaskResponse struct {
+	TaskID      string `json:"taskId"`
+	Command     string `json:"command"`
+	ScheduledAt string `json:"scheduledAt,omitempty"`
+	PickedAt    string `json:"pickedAt,omitempty"`
+	StartedAt   string `json:"startedAt,omitempty"`
+	CompletedAt string `json:"completedAt,omitempty"`
+	FailedAt    string `json:"failedAt,omitempty"`
+}
+
+type ScheduleTaskPayload struct {
+	Command     string `json:"command"`
+	ScheduledAt string `json:"scheduledAt"` // ISO 8601 format
+
 }
 
 func NewSchedulerService(port int, store *taskdb.Store) *SchedulerService {
 	return &SchedulerService{
 		Port:  port,
-		Store: store,
+		store: store,
 	}
 }
 
-func (s *SchedulerService) StartHttpServer() error {
-	// start http service
-	mux := http.NewServeMux()
-	mux.HandleFunc("POST /task", func(w http.ResponseWriter, r *http.Request) {
-		// TODO add handler logic
-	})
-	server := http.Server{
-		Addr:         fmt.Sprintf(":%v", s.Port),
-		Handler:      mux,
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
-		IdleTimeout:  120 * time.Second,
+func WriteErrorResponse(w http.ResponseWriter, statusCode int, errMessage string) {
+	w.WriteHeader(statusCode)
+	w.Write([]byte(errMessage))
+}
+
+func ParseJSONBody[T any](r *http.Request) (T, error) {
+	var parsed T
+	err := json.NewDecoder(r.Body).Decode(&parsed)
+	if err != nil {
+		return parsed, fmt.Errorf("unable to parse JSON: `%s`", err)
 	}
-	// start the server
-	go func() {
-		fmt.Printf("Starting server on port %v\n", s.Port)
-		err := server.ListenAndServe()
-		if err != nil {
-			fmt.Printf("Error starting server: %s", err.Error())
-			os.Exit(1)
-		}
-	}()
-	// trap sigterm or interupt and gracefully shutdown the server
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
-	signal.Notify(c, syscall.SIGTERM)
-	// Block until a signal is received.
-	sig := <-c
-	log.Println("Got signal:", sig)
-	// gracefully shutdown the server, waiting max 30 seconds for current operations to complete
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-	return server.Shutdown(ctx)
+	return parsed, nil
+}
+
+func WriteSuccessResponse(w http.ResponseWriter, response any) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	_ = json.NewEncoder(w).Encode(response)
 }

@@ -6,9 +6,13 @@ package taskpostgres
 
 import (
 	"context"
+
+	uuid "github.com/gofrs/uuid/v5"
 )
 
 type Querier interface {
+	CreateTask(ctx context.Context, arg CreateTaskParams) (Task, error)
+	GetTaskByID(ctx context.Context, id uuid.UUID) (Task, error)
 	GetTasks(ctx context.Context) ([]Task, error)
 }
 
