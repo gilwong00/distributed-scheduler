@@ -1,2 +1,56 @@
 # Use an official Go runtime as a parent image
-FROM golang:1.22
+# First stage
+FROM golang:1.22 AS builder
+
+# Install Protobuf compiler and necessary packages
+RUN apt-get update && apt-get install -y \
+  protobuf-compiler \
+  git \
+  make \
+  && rm -rf /var/lib/apt/lists/*
+
+# Install the protoc-gen-go and protoc-gen-go-grpc plugins
+RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+RUN go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the go.mod and go.sum files first to leverage Docker cache
+COPY go.mod go.sum Makefile ./
+
+# Download all dependencies
+RUN go mod download
+
+# Copy the local package files to the container's workspace.
+COPY internal/ ./internal/
+COPY proto/ ./proto/
+COPY cmd/worker/main.go .
+
+# Generate protobuf files.
+RUN make proto
+
+# Build binary
+RUN go build -o worker main.go
+
+# Second stage
+FROM debian:bullseye-slim
+
+# Install the necessary libraries for running the worker (if any)
+RUN apt-get update && apt-get install -y \
+	libc6 \
+	libstdc++6 \
+	ca-certificates \
+	&& rm -rf /var/lib/apt/lists/*
+
+# Copy the compiled binary from the builder stage
+COPY --from=builder /app/worker /app/worker
+
+# Copy the generated proto files
+COPY --from=builder /app/proto/gen/ /app/proto/gen/
+
+# Set the working directory
+WORKDIR /app
+
+# Run the worker when the container launches
+CMD ["./worker", "--coordinator=coordinator:8080"]
