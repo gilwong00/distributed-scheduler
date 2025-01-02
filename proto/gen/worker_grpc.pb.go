@@ -4,7 +4,7 @@
 // - protoc             v3.21.12
 // source: worker.proto
 
-package taskproto
+package taskrpc
 
 import (
 	context "context"

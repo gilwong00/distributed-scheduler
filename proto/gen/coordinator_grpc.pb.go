@@ -4,7 +4,7 @@
 // - protoc             v3.21.12
 // source: coordinator.proto
 
-package taskproto
+package taskrpc
 
 import (
 	grpc "google.golang.org/grpc"
