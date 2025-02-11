@@ -4,7 +4,7 @@ DB_URL=postgres://postgres:postgres@localhost:5432/task?sslmode=disable
 # This will output the help for each task
 .PHONY: help
 help: ## List all commands and sub-commands in the Makefile.
-	@echo '[Lummis-Server] Available Make Targets:'
+	@echo 'Available Make Targets:'
 	@awk '/^[a-zA-Z_0-9.-]+:/ { print $$1 }' $(MAKEFILE_LIST) | sed 's/:$$//' | sort | uniq
 
 .PHONY: setup
@@ -56,3 +56,11 @@ startscheduler:
 .PHONY: startworker
 startworker:
 	cd cmd && cd ./worker && go run main.go
+
+.PHONY: startcoordinator
+startcoordinator:
+	cd cmd && cd ./coordinator && go run main.go
+
+.PHONY: cluster
+cluster:
+	docker compose up --build --scale worker=3

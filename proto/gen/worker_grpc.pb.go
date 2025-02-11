@@ -19,15 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	WorkerService_SubmitTask_FullMethodName = "/workerproto.WorkerService/SubmitTask"
+	WorkerService_ReceiveTask_FullMethodName = "/workerproto.WorkerService/ReceiveTask"
 )
 
 // WorkerServiceClient is the client API for WorkerService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type WorkerServiceClient interface {
-	// Sends a task to the worker
-	SubmitTask(ctx context.Context, in *TaskRequest, opts ...grpc.CallOption) (*TaskResponse, error)
+	// Sends a task to the worker and returns the task's response.
+	ReceiveTask(ctx context.Context, in *ReceiveTaskRequest, opts ...grpc.CallOption) (*ReceiveTaskResponse, error)
 }
 
 type workerServiceClient struct {
@@ -38,9 +38,9 @@ func NewWorkerServiceClient(cc grpc.ClientConnInterface) WorkerServiceClient {
 	return &workerServiceClient{cc}
 }
 
-func (c *workerServiceClient) SubmitTask(ctx context.Context, in *TaskRequest, opts ...grpc.CallOption) (*TaskResponse, error) {
-	out := new(TaskResponse)
-	err := c.cc.Invoke(ctx, WorkerService_SubmitTask_FullMethodName, in, out, opts...)
+func (c *workerServiceClient) ReceiveTask(ctx context.Context, in *ReceiveTaskRequest, opts ...grpc.CallOption) (*ReceiveTaskResponse, error) {
+	out := new(ReceiveTaskResponse)
+	err := c.cc.Invoke(ctx, WorkerService_ReceiveTask_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -51,8 +51,8 @@ func (c *workerServiceClient) SubmitTask(ctx context.Context, in *TaskRequest, o
 // All implementations must embed UnimplementedWorkerServiceServer
 // for forward compatibility
 type WorkerServiceServer interface {
-	// Sends a task to the worker
-	SubmitTask(context.Context, *TaskRequest) (*TaskResponse, error)
+	// Sends a task to the worker and returns the task's response.
+	ReceiveTask(context.Context, *ReceiveTaskRequest) (*ReceiveTaskResponse, error)
 	mustEmbedUnimplementedWorkerServiceServer()
 }
 
@@ -60,8 +60,8 @@ type WorkerServiceServer interface {
 type UnimplementedWorkerServiceServer struct {
 }
 
-func (UnimplementedWorkerServiceServer) SubmitTask(context.Context, *TaskRequest) (*TaskResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SubmitTask not implemented")
+func (UnimplementedWorkerServiceServer) ReceiveTask(context.Context, *ReceiveTaskRequest) (*ReceiveTaskResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReceiveTask not implemented")
 }
 func (UnimplementedWorkerServiceServer) mustEmbedUnimplementedWorkerServiceServer() {}
 
@@ -76,20 +76,20 @@ func RegisterWorkerServiceServer(s grpc.ServiceRegistrar, srv WorkerServiceServe
 	s.RegisterService(&WorkerService_ServiceDesc, srv)
 }
 
-func _WorkerService_SubmitTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TaskRequest)
+func _WorkerService_ReceiveTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReceiveTaskRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(WorkerServiceServer).SubmitTask(ctx, in)
+		return srv.(WorkerServiceServer).ReceiveTask(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: WorkerService_SubmitTask_FullMethodName,
+		FullMethod: WorkerService_ReceiveTask_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WorkerServiceServer).SubmitTask(ctx, req.(*TaskRequest))
+		return srv.(WorkerServiceServer).ReceiveTask(ctx, req.(*ReceiveTaskRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -102,8 +102,8 @@ var WorkerService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*WorkerServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SubmitTask",
-			Handler:    _WorkerService_SubmitTask_Handler,
+			MethodName: "ReceiveTask",
+			Handler:    _WorkerService_ReceiveTask_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

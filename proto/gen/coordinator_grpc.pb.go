@@ -7,7 +7,10 @@
 package taskrpc
 
 import (
+	context "context"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -15,12 +18,22 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-const ()
+const (
+	CoordinatorService_SubmitTask_FullMethodName       = "/coordinatorproto.CoordinatorService/SubmitTask"
+	CoordinatorService_UpdateTaskStatus_FullMethodName = "/coordinatorproto.CoordinatorService/UpdateTaskStatus"
+	CoordinatorService_SendHeartbeat_FullMethodName    = "/coordinatorproto.CoordinatorService/SendHeartbeat"
+)
 
 // CoordinatorServiceClient is the client API for CoordinatorService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CoordinatorServiceClient interface {
+	// Sends a task to the worker and returns the task's response.
+	SubmitTask(ctx context.Context, in *SubmitTaskRequest, opts ...grpc.CallOption) (*SubmitTaskResponse, error)
+	// Updates the status of a task with a new status and time stamps.
+	UpdateTaskStatus(ctx context.Context, in *UpdateTaskStatusRequest, opts ...grpc.CallOption) (*UpdateTaskStatusResponse, error)
+	// Sends a heartbeat to the server, allowing the worker to signal that it's still active.
+	SendHeartbeat(ctx context.Context, in *SendHeartbeatRequest, opts ...grpc.CallOption) (*SendHeartbeatResponse, error)
 }
 
 type coordinatorServiceClient struct {
@@ -31,10 +44,43 @@ func NewCoordinatorServiceClient(cc grpc.ClientConnInterface) CoordinatorService
 	return &coordinatorServiceClient{cc}
 }
 
+func (c *coordinatorServiceClient) SubmitTask(ctx context.Context, in *SubmitTaskRequest, opts ...grpc.CallOption) (*SubmitTaskResponse, error) {
+	out := new(SubmitTaskResponse)
+	err := c.cc.Invoke(ctx, CoordinatorService_SubmitTask_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *coordinatorServiceClient) UpdateTaskStatus(ctx context.Context, in *UpdateTaskStatusRequest, opts ...grpc.CallOption) (*UpdateTaskStatusResponse, error) {
+	out := new(UpdateTaskStatusResponse)
+	err := c.cc.Invoke(ctx, CoordinatorService_UpdateTaskStatus_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *coordinatorServiceClient) SendHeartbeat(ctx context.Context, in *SendHeartbeatRequest, opts ...grpc.CallOption) (*SendHeartbeatResponse, error) {
+	out := new(SendHeartbeatResponse)
+	err := c.cc.Invoke(ctx, CoordinatorService_SendHeartbeat_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CoordinatorServiceServer is the server API for CoordinatorService service.
 // All implementations must embed UnimplementedCoordinatorServiceServer
 // for forward compatibility
 type CoordinatorServiceServer interface {
+	// Sends a task to the worker and returns the task's response.
+	SubmitTask(context.Context, *SubmitTaskRequest) (*SubmitTaskResponse, error)
+	// Updates the status of a task with a new status and time stamps.
+	UpdateTaskStatus(context.Context, *UpdateTaskStatusRequest) (*UpdateTaskStatusResponse, error)
+	// Sends a heartbeat to the server, allowing the worker to signal that it's still active.
+	SendHeartbeat(context.Context, *SendHeartbeatRequest) (*SendHeartbeatResponse, error)
 	mustEmbedUnimplementedCoordinatorServiceServer()
 }
 
@@ -42,6 +88,15 @@ type CoordinatorServiceServer interface {
 type UnimplementedCoordinatorServiceServer struct {
 }
 
+func (UnimplementedCoordinatorServiceServer) SubmitTask(context.Context, *SubmitTaskRequest) (*SubmitTaskResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SubmitTask not implemented")
+}
+func (UnimplementedCoordinatorServiceServer) UpdateTaskStatus(context.Context, *UpdateTaskStatusRequest) (*UpdateTaskStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateTaskStatus not implemented")
+}
+func (UnimplementedCoordinatorServiceServer) SendHeartbeat(context.Context, *SendHeartbeatRequest) (*SendHeartbeatResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendHeartbeat not implemented")
+}
 func (UnimplementedCoordinatorServiceServer) mustEmbedUnimplementedCoordinatorServiceServer() {}
 
 // UnsafeCoordinatorServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -55,13 +110,80 @@ func RegisterCoordinatorServiceServer(s grpc.ServiceRegistrar, srv CoordinatorSe
 	s.RegisterService(&CoordinatorService_ServiceDesc, srv)
 }
 
+func _CoordinatorService_SubmitTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SubmitTaskRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CoordinatorServiceServer).SubmitTask(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CoordinatorService_SubmitTask_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CoordinatorServiceServer).SubmitTask(ctx, req.(*SubmitTaskRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CoordinatorService_UpdateTaskStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateTaskStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CoordinatorServiceServer).UpdateTaskStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CoordinatorService_UpdateTaskStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CoordinatorServiceServer).UpdateTaskStatus(ctx, req.(*UpdateTaskStatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CoordinatorService_SendHeartbeat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendHeartbeatRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CoordinatorServiceServer).SendHeartbeat(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CoordinatorService_SendHeartbeat_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CoordinatorServiceServer).SendHeartbeat(ctx, req.(*SendHeartbeatRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CoordinatorService_ServiceDesc is the grpc.ServiceDesc for CoordinatorService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var CoordinatorService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "coordinatorproto.CoordinatorService",
 	HandlerType: (*CoordinatorServiceServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams:     []grpc.StreamDesc{},
-	Metadata:    "coordinator.proto",
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "SubmitTask",
+			Handler:    _CoordinatorService_SubmitTask_Handler,
+		},
+		{
+			MethodName: "UpdateTaskStatus",
+			Handler:    _CoordinatorService_UpdateTaskStatus_Handler,
+		},
+		{
+			MethodName: "SendHeartbeat",
+			Handler:    _CoordinatorService_SendHeartbeat_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "coordinator.proto",
 }

@@ -10,6 +10,7 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
+	sync "sync"
 )
 
 const (
@@ -19,26 +20,510 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// TaskStatus represents the possible statuses of a task.
+type TaskStatus int32
+
+const (
+	TaskStatus_UNSPECIFIED TaskStatus = 0 // Default value; the status is unspecified.
+	TaskStatus_QUEUED      TaskStatus = 1 // The task has been queued and is waiting to be processed.
+	TaskStatus_STARTED     TaskStatus = 2 // The task has started processing.
+	TaskStatus_COMPLETE    TaskStatus = 3 // The task has been completed successfully.
+	TaskStatus_FAILED      TaskStatus = 4 // The task has failed during processing.
+)
+
+// Enum value maps for TaskStatus.
+var (
+	TaskStatus_name = map[int32]string{
+		0: "UNSPECIFIED",
+		1: "QUEUED",
+		2: "STARTED",
+		3: "COMPLETE",
+		4: "FAILED",
+	}
+	TaskStatus_value = map[string]int32{
+		"UNSPECIFIED": 0,
+		"QUEUED":      1,
+		"STARTED":     2,
+		"COMPLETE":    3,
+		"FAILED":      4,
+	}
+)
+
+func (x TaskStatus) Enum() *TaskStatus {
+	p := new(TaskStatus)
+	*p = x
+	return p
+}
+
+func (x TaskStatus) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (TaskStatus) Descriptor() protoreflect.EnumDescriptor {
+	return file_coordinator_proto_enumTypes[0].Descriptor()
+}
+
+func (TaskStatus) Type() protoreflect.EnumType {
+	return &file_coordinator_proto_enumTypes[0]
+}
+
+func (x TaskStatus) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use TaskStatus.Descriptor instead.
+func (TaskStatus) EnumDescriptor() ([]byte, []int) {
+	return file_coordinator_proto_rawDescGZIP(), []int{0}
+}
+
+// SubmitTaskRequest represents a request for submitting a task, containing the task's payload data.
+type SubmitTaskRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Payload string `protobuf:"bytes,1,opt,name=payload,proto3" json:"payload,omitempty"` // Data associated with the task to be processed.
+}
+
+func (x *SubmitTaskRequest) Reset() {
+	*x = SubmitTaskRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_coordinator_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SubmitTaskRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SubmitTaskRequest) ProtoMessage() {}
+
+func (x *SubmitTaskRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_coordinator_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SubmitTaskRequest.ProtoReflect.Descriptor instead.
+func (*SubmitTaskRequest) Descriptor() ([]byte, []int) {
+	return file_coordinator_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *SubmitTaskRequest) GetPayload() string {
+	if x != nil {
+		return x.Payload
+	}
+	return ""
+}
+
+// SubmitTaskResponse represents the response to a task submission, including the task ID,
+// a message with additional information, and a success flag indicating if the task
+// was successfully processed.
+type SubmitTaskResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	TaskId  string `protobuf:"bytes,1,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"` // Unique identifier for the task.
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`             // Message providing additional information about the task.
+}
+
+func (x *SubmitTaskResponse) Reset() {
+	*x = SubmitTaskResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_coordinator_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SubmitTaskResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SubmitTaskResponse) ProtoMessage() {}
+
+func (x *SubmitTaskResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_coordinator_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SubmitTaskResponse.ProtoReflect.Descriptor instead.
+func (*SubmitTaskResponse) Descriptor() ([]byte, []int) {
+	return file_coordinator_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *SubmitTaskResponse) GetTaskId() string {
+	if x != nil {
+		return x.TaskId
+	}
+	return ""
+}
+
+func (x *SubmitTaskResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+// UpdateTaskStatusRequest represents a request to update the status of a task, including
+// the task ID, the new status, and the timestamps for when the task started, completed,
+// or failed.
+type UpdateTaskStatusRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	TaskId      string     `protobuf:"bytes,1,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"`                     // Unique identifier for the task.
+	Status      TaskStatus `protobuf:"varint,2,opt,name=status,proto3,enum=coordinatorproto.TaskStatus" json:"status,omitempty"` // The new status of the task.
+	StartedAt   int64      `protobuf:"varint,3,opt,name=started_at,json=startedAt,proto3" json:"started_at,omitempty"`           // Timestamp of when the task started (optional).
+	CompletedAt int64      `protobuf:"varint,4,opt,name=completed_at,json=completedAt,proto3" json:"completed_at,omitempty"`     // Timestamp of when the task was completed (optional).
+	FailedAt    int64      `protobuf:"varint,5,opt,name=failed_at,json=failedAt,proto3" json:"failed_at,omitempty"`              // Timestamp of when the task failed (optional).
+}
+
+func (x *UpdateTaskStatusRequest) Reset() {
+	*x = UpdateTaskStatusRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_coordinator_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateTaskStatusRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateTaskStatusRequest) ProtoMessage() {}
+
+func (x *UpdateTaskStatusRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_coordinator_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateTaskStatusRequest.ProtoReflect.Descriptor instead.
+func (*UpdateTaskStatusRequest) Descriptor() ([]byte, []int) {
+	return file_coordinator_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *UpdateTaskStatusRequest) GetTaskId() string {
+	if x != nil {
+		return x.TaskId
+	}
+	return ""
+}
+
+func (x *UpdateTaskStatusRequest) GetStatus() TaskStatus {
+	if x != nil {
+		return x.Status
+	}
+	return TaskStatus_UNSPECIFIED
+}
+
+func (x *UpdateTaskStatusRequest) GetStartedAt() int64 {
+	if x != nil {
+		return x.StartedAt
+	}
+	return 0
+}
+
+func (x *UpdateTaskStatusRequest) GetCompletedAt() int64 {
+	if x != nil {
+		return x.CompletedAt
+	}
+	return 0
+}
+
+func (x *UpdateTaskStatusRequest) GetFailedAt() int64 {
+	if x != nil {
+		return x.FailedAt
+	}
+	return 0
+}
+
+// UpdateTaskStatusResponse represents the response to a task status update request.
+// It includes a success flag indicating whether the update was successful.
+type UpdateTaskStatusResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"` // Flag indicating whether the task status update was successful.
+}
+
+func (x *UpdateTaskStatusResponse) Reset() {
+	*x = UpdateTaskStatusResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_coordinator_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateTaskStatusResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateTaskStatusResponse) ProtoMessage() {}
+
+func (x *UpdateTaskStatusResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_coordinator_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateTaskStatusResponse.ProtoReflect.Descriptor instead.
+func (*UpdateTaskStatusResponse) Descriptor() ([]byte, []int) {
+	return file_coordinator_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *UpdateTaskStatusResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+// SendHeartbeatRequest represents a heartbeat message from a worker to the coordinator.
+// It includes the worker's unique ID and its address.
+type SendHeartbeatRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	WorkerId uint32 `protobuf:"varint,1,opt,name=workerId,proto3" json:"workerId,omitempty"` // Unique identifier for the worker.
+	Address  string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`    // Address of the worker.
+}
+
+func (x *SendHeartbeatRequest) Reset() {
+	*x = SendHeartbeatRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_coordinator_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SendHeartbeatRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SendHeartbeatRequest) ProtoMessage() {}
+
+func (x *SendHeartbeatRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_coordinator_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SendHeartbeatRequest.ProtoReflect.Descriptor instead.
+func (*SendHeartbeatRequest) Descriptor() ([]byte, []int) {
+	return file_coordinator_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *SendHeartbeatRequest) GetWorkerId() uint32 {
+	if x != nil {
+		return x.WorkerId
+	}
+	return 0
+}
+
+func (x *SendHeartbeatRequest) GetAddress() string {
+	if x != nil {
+		return x.Address
+	}
+	return ""
+}
+
+// SendHeartbeatResponse represents the response to a heartbeat message.
+// It includes an acknowledgment flag indicating whether the heartbeat was acknowledged.
+type SendHeartbeatResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Acknowledged bool `protobuf:"varint,1,opt,name=acknowledged,proto3" json:"acknowledged,omitempty"` // Flag indicating whether the heartbeat was acknowledged.
+}
+
+func (x *SendHeartbeatResponse) Reset() {
+	*x = SendHeartbeatResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_coordinator_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SendHeartbeatResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SendHeartbeatResponse) ProtoMessage() {}
+
+func (x *SendHeartbeatResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_coordinator_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SendHeartbeatResponse.ProtoReflect.Descriptor instead.
+func (*SendHeartbeatResponse) Descriptor() ([]byte, []int) {
+	return file_coordinator_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *SendHeartbeatResponse) GetAcknowledged() bool {
+	if x != nil {
+		return x.Acknowledged
+	}
+	return false
+}
+
 var File_coordinator_proto protoreflect.FileDescriptor
 
 var file_coordinator_proto_rawDesc = []byte{
 	0x0a, 0x11, 0x63, 0x6f, 0x6f, 0x72, 0x64, 0x69, 0x6e, 0x61, 0x74, 0x6f, 0x72, 0x2e, 0x70, 0x72,
 	0x6f, 0x74, 0x6f, 0x12, 0x10, 0x63, 0x6f, 0x6f, 0x72, 0x64, 0x69, 0x6e, 0x61, 0x74, 0x6f, 0x72,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32, 0x14, 0x0a, 0x12, 0x43, 0x6f, 0x6f, 0x72, 0x64, 0x69, 0x6e,
-	0x61, 0x74, 0x6f, 0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x42, 0x34, 0x5a, 0x32, 0x67,
-	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x67, 0x69, 0x6c, 0x77, 0x6f, 0x6e,
-	0x67, 0x30, 0x30, 0x2f, 0x74, 0x61, 0x73, 0x6b, 0x2d, 0x72, 0x75, 0x6e, 0x6e, 0x65, 0x72, 0x2f,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x65, 0x6e, 0x2f, 0x74, 0x61, 0x73, 0x6b, 0x72, 0x70,
-	0x63, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x2d, 0x0a, 0x11, 0x53, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x54,
+	0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x70, 0x61,
+	0x79, 0x6c, 0x6f, 0x61, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x70, 0x61, 0x79,
+	0x6c, 0x6f, 0x61, 0x64, 0x22, 0x47, 0x0a, 0x12, 0x53, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x54, 0x61,
+	0x73, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x17, 0x0a, 0x07, 0x74, 0x61,
+	0x73, 0x6b, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x74, 0x61, 0x73,
+	0x6b, 0x49, 0x64, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0xc7, 0x01,
+	0x0a, 0x17, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x54, 0x61, 0x73, 0x6b, 0x53, 0x74, 0x61, 0x74,
+	0x75, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x74, 0x61, 0x73,
+	0x6b, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x74, 0x61, 0x73, 0x6b,
+	0x49, 0x64, 0x12, 0x34, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x0e, 0x32, 0x1c, 0x2e, 0x63, 0x6f, 0x6f, 0x72, 0x64, 0x69, 0x6e, 0x61, 0x74, 0x6f, 0x72,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73,
+	0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x1d, 0x0a, 0x0a, 0x73, 0x74, 0x61, 0x72,
+	0x74, 0x65, 0x64, 0x5f, 0x61, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x09, 0x73, 0x74,
+	0x61, 0x72, 0x74, 0x65, 0x64, 0x41, 0x74, 0x12, 0x21, 0x0a, 0x0c, 0x63, 0x6f, 0x6d, 0x70, 0x6c,
+	0x65, 0x74, 0x65, 0x64, 0x5f, 0x61, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0b, 0x63,
+	0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x65, 0x64, 0x41, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x66, 0x61,
+	0x69, 0x6c, 0x65, 0x64, 0x5f, 0x61, 0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x03, 0x52, 0x08, 0x66,
+	0x61, 0x69, 0x6c, 0x65, 0x64, 0x41, 0x74, 0x22, 0x34, 0x0a, 0x18, 0x55, 0x70, 0x64, 0x61, 0x74,
+	0x65, 0x54, 0x61, 0x73, 0x6b, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x22, 0x4c, 0x0a,
+	0x14, 0x53, 0x65, 0x6e, 0x64, 0x48, 0x65, 0x61, 0x72, 0x74, 0x62, 0x65, 0x61, 0x74, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x77, 0x6f, 0x72, 0x6b, 0x65, 0x72, 0x49,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x08, 0x77, 0x6f, 0x72, 0x6b, 0x65, 0x72, 0x49,
+	0x64, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22, 0x3b, 0x0a, 0x15, 0x53,
+	0x65, 0x6e, 0x64, 0x48, 0x65, 0x61, 0x72, 0x74, 0x62, 0x65, 0x61, 0x74, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x22, 0x0a, 0x0c, 0x61, 0x63, 0x6b, 0x6e, 0x6f, 0x77, 0x6c, 0x65,
+	0x64, 0x67, 0x65, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0c, 0x61, 0x63, 0x6b, 0x6e,
+	0x6f, 0x77, 0x6c, 0x65, 0x64, 0x67, 0x65, 0x64, 0x2a, 0x50, 0x0a, 0x0a, 0x54, 0x61, 0x73, 0x6b,
+	0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x0f, 0x0a, 0x0b, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43,
+	0x49, 0x46, 0x49, 0x45, 0x44, 0x10, 0x00, 0x12, 0x0a, 0x0a, 0x06, 0x51, 0x55, 0x45, 0x55, 0x45,
+	0x44, 0x10, 0x01, 0x12, 0x0b, 0x0a, 0x07, 0x53, 0x54, 0x41, 0x52, 0x54, 0x45, 0x44, 0x10, 0x02,
+	0x12, 0x0c, 0x0a, 0x08, 0x43, 0x4f, 0x4d, 0x50, 0x4c, 0x45, 0x54, 0x45, 0x10, 0x03, 0x12, 0x0a,
+	0x0a, 0x06, 0x46, 0x41, 0x49, 0x4c, 0x45, 0x44, 0x10, 0x04, 0x32, 0xc0, 0x02, 0x0a, 0x12, 0x43,
+	0x6f, 0x6f, 0x72, 0x64, 0x69, 0x6e, 0x61, 0x74, 0x6f, 0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63,
+	0x65, 0x12, 0x59, 0x0a, 0x0a, 0x53, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x54, 0x61, 0x73, 0x6b, 0x12,
+	0x23, 0x2e, 0x63, 0x6f, 0x6f, 0x72, 0x64, 0x69, 0x6e, 0x61, 0x74, 0x6f, 0x72, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x2e, 0x53, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x24, 0x2e, 0x63, 0x6f, 0x6f, 0x72, 0x64, 0x69, 0x6e, 0x61, 0x74,
+	0x6f, 0x72, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x75, 0x62, 0x6d, 0x69, 0x74, 0x54, 0x61,
+	0x73, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x6b, 0x0a, 0x10,
+	0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x54, 0x61, 0x73, 0x6b, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73,
+	0x12, 0x29, 0x2e, 0x63, 0x6f, 0x6f, 0x72, 0x64, 0x69, 0x6e, 0x61, 0x74, 0x6f, 0x72, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x54, 0x61, 0x73, 0x6b, 0x53, 0x74,
+	0x61, 0x74, 0x75, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2a, 0x2e, 0x63, 0x6f,
+	0x6f, 0x72, 0x64, 0x69, 0x6e, 0x61, 0x74, 0x6f, 0x72, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x55,
+	0x70, 0x64, 0x61, 0x74, 0x65, 0x54, 0x61, 0x73, 0x6b, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x62, 0x0a, 0x0d, 0x53, 0x65, 0x6e,
+	0x64, 0x48, 0x65, 0x61, 0x72, 0x74, 0x62, 0x65, 0x61, 0x74, 0x12, 0x26, 0x2e, 0x63, 0x6f, 0x6f,
+	0x72, 0x64, 0x69, 0x6e, 0x61, 0x74, 0x6f, 0x72, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x65,
+	0x6e, 0x64, 0x48, 0x65, 0x61, 0x72, 0x74, 0x62, 0x65, 0x61, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x27, 0x2e, 0x63, 0x6f, 0x6f, 0x72, 0x64, 0x69, 0x6e, 0x61, 0x74, 0x6f, 0x72,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x65, 0x6e, 0x64, 0x48, 0x65, 0x61, 0x72, 0x74, 0x62,
+	0x65, 0x61, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x34, 0x5a,
+	0x32, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x67, 0x69, 0x6c, 0x77,
+	0x6f, 0x6e, 0x67, 0x30, 0x30, 0x2f, 0x74, 0x61, 0x73, 0x6b, 0x2d, 0x72, 0x75, 0x6e, 0x6e, 0x65,
+	0x72, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x65, 0x6e, 0x2f, 0x74, 0x61, 0x73, 0x6b,
+	0x72, 0x70, 0x63, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var file_coordinator_proto_goTypes = []interface{}{}
+var (
+	file_coordinator_proto_rawDescOnce sync.Once
+	file_coordinator_proto_rawDescData = file_coordinator_proto_rawDesc
+)
+
+func file_coordinator_proto_rawDescGZIP() []byte {
+	file_coordinator_proto_rawDescOnce.Do(func() {
+		file_coordinator_proto_rawDescData = protoimpl.X.CompressGZIP(file_coordinator_proto_rawDescData)
+	})
+	return file_coordinator_proto_rawDescData
+}
+
+var file_coordinator_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_coordinator_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_coordinator_proto_goTypes = []interface{}{
+	(TaskStatus)(0),                  // 0: coordinatorproto.TaskStatus
+	(*SubmitTaskRequest)(nil),        // 1: coordinatorproto.SubmitTaskRequest
+	(*SubmitTaskResponse)(nil),       // 2: coordinatorproto.SubmitTaskResponse
+	(*UpdateTaskStatusRequest)(nil),  // 3: coordinatorproto.UpdateTaskStatusRequest
+	(*UpdateTaskStatusResponse)(nil), // 4: coordinatorproto.UpdateTaskStatusResponse
+	(*SendHeartbeatRequest)(nil),     // 5: coordinatorproto.SendHeartbeatRequest
+	(*SendHeartbeatResponse)(nil),    // 6: coordinatorproto.SendHeartbeatResponse
+}
 var file_coordinator_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0, // 0: coordinatorproto.UpdateTaskStatusRequest.status:type_name -> coordinatorproto.TaskStatus
+	1, // 1: coordinatorproto.CoordinatorService.SubmitTask:input_type -> coordinatorproto.SubmitTaskRequest
+	3, // 2: coordinatorproto.CoordinatorService.UpdateTaskStatus:input_type -> coordinatorproto.UpdateTaskStatusRequest
+	5, // 3: coordinatorproto.CoordinatorService.SendHeartbeat:input_type -> coordinatorproto.SendHeartbeatRequest
+	2, // 4: coordinatorproto.CoordinatorService.SubmitTask:output_type -> coordinatorproto.SubmitTaskResponse
+	4, // 5: coordinatorproto.CoordinatorService.UpdateTaskStatus:output_type -> coordinatorproto.UpdateTaskStatusResponse
+	6, // 6: coordinatorproto.CoordinatorService.SendHeartbeat:output_type -> coordinatorproto.SendHeartbeatResponse
+	4, // [4:7] is the sub-list for method output_type
+	1, // [1:4] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_coordinator_proto_init() }
@@ -46,18 +531,94 @@ func file_coordinator_proto_init() {
 	if File_coordinator_proto != nil {
 		return
 	}
+	if !protoimpl.UnsafeEnabled {
+		file_coordinator_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SubmitTaskRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_coordinator_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SubmitTaskResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_coordinator_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateTaskStatusRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_coordinator_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateTaskStatusResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_coordinator_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SendHeartbeatRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_coordinator_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SendHeartbeatResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_coordinator_proto_rawDesc,
-			NumEnums:      0,
-			NumMessages:   0,
+			NumEnums:      1,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_coordinator_proto_goTypes,
 		DependencyIndexes: file_coordinator_proto_depIdxs,
+		EnumInfos:         file_coordinator_proto_enumTypes,
+		MessageInfos:      file_coordinator_proto_msgTypes,
 	}.Build()
 	File_coordinator_proto = out.File
 	file_coordinator_proto_rawDesc = nil

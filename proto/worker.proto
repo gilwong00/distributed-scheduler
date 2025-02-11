@@ -4,21 +4,27 @@ package workerproto;
 
 option go_package = "github.com/gilwong00/task-runner/proto/gen/taskrpc";
 
-enum TaskStatus {
-	UNSPECIFIED = 0;
-  QUEUED = 1;
-  STARTED = 2;
-  COMPLETE = 3;
-  FAILED = 4;
-}
 
-
-// The worker service definition.
+// WorkerService defines the methods for interacting with the worker service.
+// It includes the SubmitTask RPC, which sends a task to the worker and receives
+// a response with the task result.
 service WorkerService {
-  // Sends a task to the worker
-  rpc SubmitTask (TaskRequest) returns (TaskResponse) {}
+  // Sends a task to the worker and returns the task's response.
+  rpc ReceiveTask (ReceiveTaskRequest) returns (ReceiveTaskResponse) {}
 }
 
-message TaskRequest {}
+// TaskRequest represents a request for a task, containing a unique task ID
+// and the associated payload data.
+message ReceiveTaskRequest {
+  string task_id = 1;  // Unique identifier for the task.
+  string payload = 2;  // Data associated with the task.
+}
 
-message TaskResponse {}
+// TaskResponse represents the response to a task request, including the task ID,
+// a message with additional information, and a success flag indicating if the task
+// was successfully processed.
+message ReceiveTaskResponse {
+  string task_id = 1;   // Unique identifier for the task.
+  string message = 2;   // Message providing additional information about the task.
+  bool success = 3;     // Flag indicating whether the task was successful.
+}

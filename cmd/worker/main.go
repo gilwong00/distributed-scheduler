@@ -13,7 +13,6 @@ var (
 
 func main() {
 	flag.Parse()
-
 	workerService := workerservice.NewService(*workerPort, *coordinatorPort)
 	if err := workerService.Start(); err != nil {
 		panic(err)

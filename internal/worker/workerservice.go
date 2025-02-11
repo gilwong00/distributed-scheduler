@@ -31,6 +31,7 @@ type WorkerService struct {
 	grpcServer        *grpc.Server
 	cancel            context.CancelFunc
 	wg                sync.WaitGroup // WaitGroup to wait for all goroutines to finish
+	taskQueue         chan *pb.ReceiveTaskRequest
 }
 
 func NewService(workerServerPort string, coordinatorPort string) *WorkerService {
@@ -40,16 +41,15 @@ func NewService(workerServerPort string, coordinatorPort string) *WorkerService 
 		coordinatorPort:  coordinatorPort,
 		ctx:              ctx,
 		cancel:           cancel,
+		taskQueue:        make(chan *pb.ReceiveTaskRequest, 100), // queue to process all tasks received by the workers
 	}
 }
 
 func (w *WorkerService) Start() error {
 	w.startWorkerPool(maxWorkerPoolSize)
-
 	if err := w.startGRPCServer(); err != nil {
 		return fmt.Errorf("gRPC server start failed: %w", err)
 	}
-
 	return w.awaitShutdown()
 }
 
@@ -73,6 +73,8 @@ func (w *WorkerService) awaitShutdown() error {
 // worker is the function run by each worker goroutine.
 func (w *WorkerService) worker() {
 	defer w.wg.Done() // Signal this worker is done when the function returns.
+
+	// TODO: implement logic
 }
 
 func (w *WorkerService) stop() {
@@ -84,3 +86,7 @@ func (w *WorkerService) stop() {
 	w.closeGRPCConnection()
 	log.Println("Worker server stopped")
 }
+
+// TODO: implement sendHeartBeat method
+// TODO: implement periodicHeartbeat method
+// TODO: implement process task method

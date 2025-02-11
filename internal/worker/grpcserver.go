@@ -34,7 +34,6 @@ func (w *WorkerService) startGRPCServer() error {
 			log.Fatalf("worker gRPC server failed: %v", err)
 		}
 	}()
-
 	return nil
 }
 
@@ -42,7 +41,6 @@ func (w *WorkerService) closeGRPCConnection() {
 	if w.grpcServer != nil {
 		w.grpcServer.GracefulStop()
 	}
-
 	if w.listener != nil {
 		if err := w.listener.Close(); err != nil {
 			log.Printf("Error while closing the listener: %v", err)
