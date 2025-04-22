@@ -12,8 +12,10 @@ import (
 
 type Querier interface {
 	CreateTask(ctx context.Context, arg CreateTaskParams) (Task, error)
+	GetAllExecutableTask(ctx context.Context) ([]Task, error)
 	GetTaskByID(ctx context.Context, id uuid.UUID) (Task, error)
 	GetTasks(ctx context.Context) ([]Task, error)
+	UpdateTaskPickedAtByID(ctx context.Context, id uuid.UUID) error
 }
 
 var _ Querier = (*Queries)(nil)

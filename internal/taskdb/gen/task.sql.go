@@ -8,6 +8,8 @@ package taskpostgres
 import (
 	"context"
 	"time"
+
+	uuid "github.com/gofrs/uuid/v5"
 )
 
 const createTask = `-- name: CreateTask :one
@@ -34,4 +36,13 @@ func (q *Queries) CreateTask(ctx context.Context, arg CreateTaskParams) (Task, e
 		&i.FailedAt,
 	)
 	return i, err
+}
+
+const updateTaskPickedAtByID = `-- name: UpdateTaskPickedAtByID :exec
+UPDATE tasks SET picked_at = NOW() WHERE id = $1
+`
+
+func (q *Queries) UpdateTaskPickedAtByID(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, updateTaskPickedAtByID, id)
+	return err
 }

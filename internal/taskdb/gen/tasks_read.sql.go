@@ -11,6 +11,45 @@ import (
 	uuid "github.com/gofrs/uuid/v5"
 )
 
+const getAllExecutableTask = `-- name: GetAllExecutableTask :many
+SELECT id, command, created_at, scheduled_at, picked_at, started_at, completed_at, failed_at FROM tasks
+WHERE scheduled_at < (NOW() + INTERVAL '30 seconds') AND picked_at IS NULL
+ORDER BY scheduled_at
+FOR UPDATE SKIP LOCKED
+`
+
+func (q *Queries) GetAllExecutableTask(ctx context.Context) ([]Task, error) {
+	rows, err := q.db.QueryContext(ctx, getAllExecutableTask)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Task{}
+	for rows.Next() {
+		var i Task
+		if err := rows.Scan(
+			&i.ID,
+			&i.Command,
+			&i.CreatedAt,
+			&i.ScheduledAt,
+			&i.PickedAt,
+			&i.StartedAt,
+			&i.CompletedAt,
+			&i.FailedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getTaskByID = `-- name: GetTaskByID :one
 SELECT id, command, created_at, scheduled_at, picked_at, started_at, completed_at, failed_at from tasks
 WHERE id = $1

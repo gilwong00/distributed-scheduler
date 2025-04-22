@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 
-	"github.com/gilwong00/task-runner/internal/coordinator"
+	coordinatorservice "github.com/gilwong00/task-runner/internal/coordinator"
 	"github.com/gilwong00/task-runner/internal/taskdb"
 )
 
@@ -24,7 +24,7 @@ func main() {
 	store := taskdb.NewStore(
 		postgresConnection.NewDB(),
 	)
-	coordinator := coordinator.NewServer(*coordinatorPort, store)
+	coordinator := coordinatorservice.NewServer(*coordinatorPort, store)
 	if err := coordinator.Start(); err != nil {
 		panic(err)
 	}
