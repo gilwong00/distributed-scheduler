@@ -23,8 +23,8 @@ service CoordinatorService {
   // Updates the status of a task with a new status and time stamps.
   rpc UpdateTaskStatus (UpdateTaskStatusRequest) returns (UpdateTaskStatusResponse) {}
 
-  // Sends a heartbeat to the server, allowing the worker to signal that it's still active.
-  rpc SendHeartbeat (SendHeartbeatRequest) returns (SendHeartbeatResponse) {}
+  // Receives a heartbeat from a worker, allowing the worker to signal that it's still active.
+  rpc ReceiveHeartbeat (ReceiveHeartbeatRequest) returns (ReceiveHeartbeatResponse) {}
 }
 
 // SubmitTaskRequest represents a request for submitting a task, containing the task's payload data.
@@ -57,15 +57,15 @@ message UpdateTaskStatusResponse {
   bool success = 1;  // Flag indicating whether the task status update was successful.
 }
 
-// SendHeartbeatRequest represents a heartbeat message from a worker to the coordinator.
+// ReceiveHeartbeatRequest represents a heartbeat message from a worker to the coordinator.
 // It includes the worker's unique ID and its address.
-message SendHeartbeatRequest {
+message ReceiveHeartbeatRequest {
   uint32 workerId = 1;  // Unique identifier for the worker.
   string address = 2;   // Address of the worker.
 }
 
-// SendHeartbeatResponse represents the response to a heartbeat message.
+// ReceiveHeartbeatResponse represents the response to a heartbeat message.
 // It includes an acknowledgment flag indicating whether the heartbeat was acknowledged.
-message SendHeartbeatResponse {
+message ReceiveHeartbeatResponse {
   bool acknowledged = 1;  // Flag indicating whether the heartbeat was acknowledged.
 }
