@@ -4,13 +4,14 @@ import (
 	"context"
 	"errors"
 
-	pb "github.com/gilwong00/task-runner/proto/gen"
+	"connectrpc.com/connect"
+	coordinatorv1 "github.com/gilwong00/task-runner/internal/gen/proto/coordinator/v1"
 )
 
-func (c *CoordinatorServer) ReceiveHeartbeat(
+func (c *coordinatorService) ReceiveHeartbeat(
 	ctx context.Context,
-	req *pb.ReceiveHeartbeatRequest,
-) (*pb.ReceiveHeartbeatResponse, error) {
+	req *connect.Request[coordinatorv1.ReceiveHeartbeatRequest],
+) (*connect.Response[coordinatorv1.ReceiveHeartbeatResponse], error) {
 	c.WorkerPoolMutex.Lock()
 	defer c.WorkerPoolMutex.Unlock()
 

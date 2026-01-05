@@ -1,13 +1,16 @@
 module github.com/gilwong00/task-runner
 
-go 1.22.0
+go 1.24.0
+
+toolchain go1.24.4
 
 require (
+	connectrpc.com/connect v1.19.1
 	github.com/gofrs/uuid/v5 v5.3.0
 	github.com/jackc/pgx/v4 v4.18.3
 	github.com/jackc/pgx/v5 v5.7.1
 	google.golang.org/grpc v1.67.1
-	google.golang.org/protobuf v1.35.1
+	google.golang.org/protobuf v1.36.9
 )
 
 require (

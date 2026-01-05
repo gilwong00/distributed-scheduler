@@ -41,13 +41,17 @@ migratedown:
 migratedownlast:
 	migrate -path internal/taskdb/migrations -database "$(DB_URL)" down 1
 
+# .PHONY: proto
+# proto: proto/*.proto
+# 	rm -f proto/gen/**/*.go
+# 	mkdir -p proto/gen
+# 	protoc --proto_path=proto --go_out=proto/gen --go_opt=paths=source_relative \
+# 		--go-grpc_out=proto/gen --go-grpc_opt=paths=source_relative \
+# 		proto/*.proto
+
 .PHONY: proto
-proto: proto/*.proto
-	rm -f proto/gen/**/*.go
-	mkdir -p proto/gen
-	protoc --proto_path=proto --go_out=proto/gen --go_opt=paths=source_relative \
-		--go-grpc_out=proto/gen --go-grpc_opt=paths=source_relative \
-		proto/*.proto
+proto:
+	buf generate
 
 .PHONY: startscheduler
 startscheduler:

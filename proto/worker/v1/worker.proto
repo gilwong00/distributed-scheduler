@@ -1,9 +1,8 @@
 syntax = "proto3";
 
-package workerproto;
+package worker.v1;
 
-option go_package = "github.com/gilwong00/task-runner/proto/gen/taskrpc";
-
+// option go_package = "worker/v1";
 
 // WorkerService defines the methods for interacting with the worker service.
 // It includes the SubmitTask RPC, which sends a task to the worker and receives
@@ -16,15 +15,15 @@ service WorkerService {
 // TaskRequest represents a request for a task, containing a unique task ID
 // and the associated payload data.
 message ReceiveTaskRequest {
-  string task_id = 1;  // Unique identifier for the task.
-  string payload = 2;  // Data associated with the task.
+  string task_id = 1; // Unique identifier for the task.
+  string payload = 2; // Data associated with the task.
 }
 
 // TaskResponse represents the response to a task request, including the task ID,
 // a message with additional information, and a success flag indicating if the task
 // was successfully processed.
 message ReceiveTaskResponse {
-  string task_id = 1;   // Unique identifier for the task.
-  string message = 2;   // Message providing additional information about the task.
-  bool success = 3;     // Flag indicating whether the task was successful.
+  string task_id = 1; // Unique identifier for the task.
+  string message = 2; // Message providing additional information about the task.
+  bool   success = 3; // Flag indicating whether the task was successful.
 }

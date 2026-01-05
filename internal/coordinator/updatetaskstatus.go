@@ -4,12 +4,13 @@ import (
 	"context"
 	"errors"
 
-	pb "github.com/gilwong00/task-runner/proto/gen"
+	"connectrpc.com/connect"
+	coordinatorv1 "github.com/gilwong00/task-runner/internal/gen/proto/coordinator/v1"
 )
 
-func (c *CoordinatorServer) UpdateTaskStatus(
+func (c *coordinatorService) UpdateTaskStatus(
 	ctx context.Context,
-	req *pb.UpdateTaskStatusRequest,
-) (*pb.UpdateTaskStatusResponse, error) {
+	req *connect.Request[coordinatorv1.UpdateTaskStatusRequest],
+) (*connect.Response[coordinatorv1.UpdateTaskStatusResponse], error) {
 	return nil, errors.New("not implemented")
 }

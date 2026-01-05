@@ -1,16 +1,16 @@
 syntax = "proto3";
 
-package coordinatorproto;
+package coordinator.v1;
 
-option go_package = "github.com/gilwong00/task-runner/proto/gen/taskrpc";
+// option go_package = "coordinator/v1";
 
 // TaskStatus represents the possible statuses of a task.
 enum TaskStatus {
-  UNSPECIFIED = 0;  // Default value; the status is unspecified.
-  QUEUED = 1;       // The task has been queued and is waiting to be processed.
-  STARTED = 2;      // The task has started processing.
-  COMPLETE = 3;     // The task has been completed successfully.
-  FAILED = 4;       // The task has failed during processing.
+  TASKSTATUS_UNSPECIFIED = 0; // Default value; the status is unspecified.
+  TASKSTATUS_QUEUED      = 1; // The task has been queued and is waiting to be processed.
+  TASKSTATUS_STARTED     = 2; // The task has started processing.
+  TASKSTATUS_COMPLETE    = 3; // The task has been completed successfully.
+  TASKSTATUS_FAILED      = 4; // The task has failed during processing.
 }
 
 // CoordinatorService defines the methods for interacting with the coordinator service.
@@ -29,43 +29,43 @@ service CoordinatorService {
 
 // SubmitTaskRequest represents a request for submitting a task, containing the task's payload data.
 message SubmitTaskRequest {
-  string payload = 1;  // Data associated with the task to be processed.
+  string payload = 1; // Data associated with the task to be processed.
 }
 
 // SubmitTaskResponse represents the response to a task submission, including the task ID,
 // a message with additional information, and a success flag indicating if the task
 // was successfully processed.
 message SubmitTaskResponse {
-  string task_id = 1;   // Unique identifier for the task.
-  string message = 2;   // Message providing additional information about the task.
+  string task_id = 1; // Unique identifier for the task.
+  string message = 2; // Message providing additional information about the task.
 }
 
 // UpdateTaskStatusRequest represents a request to update the status of a task, including
 // the task ID, the new status, and the timestamps for when the task started, completed,
 // or failed.
 message UpdateTaskStatusRequest {
-  string task_id = 1;     // Unique identifier for the task.
-  TaskStatus status = 2;  // The new status of the task.
-  int64 started_at = 3;   // Timestamp of when the task started (optional).
-  int64 completed_at = 4; // Timestamp of when the task was completed (optional).
-  int64 failed_at = 5;    // Timestamp of when the task failed (optional).
+  string     task_id      = 1; // Unique identifier for the task.
+  TaskStatus status       = 2; // The new status of the task.
+  int64      started_at   = 3; // Timestamp of when the task started (optional).
+  int64      completed_at = 4; // Timestamp of when the task was completed (optional).
+  int64      failed_at    = 5; // Timestamp of when the task failed (optional).
 }
 
 // UpdateTaskStatusResponse represents the response to a task status update request.
 // It includes a success flag indicating whether the update was successful.
 message UpdateTaskStatusResponse {
-  bool success = 1;  // Flag indicating whether the task status update was successful.
+  bool success = 1; // Flag indicating whether the task status update was successful.
 }
 
 // ReceiveHeartbeatRequest represents a heartbeat message from a worker to the coordinator.
 // It includes the worker's unique ID and its address.
 message ReceiveHeartbeatRequest {
-  uint32 workerId = 1;  // Unique identifier for the worker.
-  string address = 2;   // Address of the worker.
+  uint32 workerId = 1; // Unique identifier for the worker.
+  string address  = 2; // Address of the worker.
 }
 
 // ReceiveHeartbeatResponse represents the response to a heartbeat message.
 // It includes an acknowledgment flag indicating whether the heartbeat was acknowledged.
 message ReceiveHeartbeatResponse {
-  bool acknowledged = 1;  // Flag indicating whether the heartbeat was acknowledged.
+  bool acknowledged = 1; // Flag indicating whether the heartbeat was acknowledged.
 }

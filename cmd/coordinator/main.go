@@ -24,7 +24,7 @@ func main() {
 	store := taskdb.NewStore(
 		postgresConnection.NewDB(),
 	)
-	coordinator := coordinatorservice.NewServer(*coordinatorPort, store)
+	coordinator := coordinatorservice.NewService(*coordinatorPort, store)
 	if err := coordinator.Start(); err != nil {
 		panic(err)
 	}
