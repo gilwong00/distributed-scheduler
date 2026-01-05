@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"connectrpc.com/connect"
-	coordinatorv1 "github.com/gilwong00/task-runner/internal/gen/proto/coordinator/v1"
-	workerv1 "github.com/gilwong00/task-runner/internal/gen/proto/worker/v1"
+	coordinatorv1 "github.com/gilwong00/task-runner/internal/gen/coordinator/v1"
+	workerv1 "github.com/gilwong00/task-runner/internal/gen/worker/v1"
 
 	"github.com/gofrs/uuid/v5"
 )

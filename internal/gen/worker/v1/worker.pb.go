@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: proto/worker/v1/worker.proto
+// source: worker/v1/worker.proto
 
 package workerv1
 
@@ -36,7 +36,7 @@ type ReceiveTaskRequest struct {
 
 func (x *ReceiveTaskRequest) Reset() {
 	*x = ReceiveTaskRequest{}
-	mi := &file_proto_worker_v1_worker_proto_msgTypes[0]
+	mi := &file_worker_v1_worker_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -48,7 +48,7 @@ func (x *ReceiveTaskRequest) String() string {
 func (*ReceiveTaskRequest) ProtoMessage() {}
 
 func (x *ReceiveTaskRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_worker_v1_worker_proto_msgTypes[0]
+	mi := &file_worker_v1_worker_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -61,7 +61,7 @@ func (x *ReceiveTaskRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReceiveTaskRequest.ProtoReflect.Descriptor instead.
 func (*ReceiveTaskRequest) Descriptor() ([]byte, []int) {
-	return file_proto_worker_v1_worker_proto_rawDescGZIP(), []int{0}
+	return file_worker_v1_worker_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *ReceiveTaskRequest) GetTaskId() string {
@@ -95,7 +95,7 @@ type ReceiveTaskResponse struct {
 
 func (x *ReceiveTaskResponse) Reset() {
 	*x = ReceiveTaskResponse{}
-	mi := &file_proto_worker_v1_worker_proto_msgTypes[1]
+	mi := &file_worker_v1_worker_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -107,7 +107,7 @@ func (x *ReceiveTaskResponse) String() string {
 func (*ReceiveTaskResponse) ProtoMessage() {}
 
 func (x *ReceiveTaskResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_worker_v1_worker_proto_msgTypes[1]
+	mi := &file_worker_v1_worker_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -120,7 +120,7 @@ func (x *ReceiveTaskResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReceiveTaskResponse.ProtoReflect.Descriptor instead.
 func (*ReceiveTaskResponse) Descriptor() ([]byte, []int) {
-	return file_proto_worker_v1_worker_proto_rawDescGZIP(), []int{1}
+	return file_worker_v1_worker_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *ReceiveTaskResponse) GetTaskId() string {
@@ -144,11 +144,11 @@ func (x *ReceiveTaskResponse) GetSuccess() bool {
 	return false
 }
 
-var File_proto_worker_v1_worker_proto protoreflect.FileDescriptor
+var File_worker_v1_worker_proto protoreflect.FileDescriptor
 
-const file_proto_worker_v1_worker_proto_rawDesc = "" +
+const file_worker_v1_worker_proto_rawDesc = "" +
 	"\n" +
-	"\x1cproto/worker/v1/worker.proto\x12\tworker.v1\"G\n" +
+	"\x16worker/v1/worker.proto\x12\tworker.v1\"G\n" +
 	"\x12ReceiveTaskRequest\x12\x17\n" +
 	"\atask_id\x18\x01 \x01(\tR\x06taskId\x12\x18\n" +
 	"\apayload\x18\x02 \x01(\tR\apayload\"b\n" +
@@ -157,28 +157,28 @@ const file_proto_worker_v1_worker_proto_rawDesc = "" +
 	"\amessage\x18\x02 \x01(\tR\amessage\x12\x18\n" +
 	"\asuccess\x18\x03 \x01(\bR\asuccess2]\n" +
 	"\rWorkerService\x12L\n" +
-	"\vReceiveTask\x12\x1d.worker.v1.ReceiveTaskRequest\x1a\x1e.worker.v1.ReceiveTaskResponseB\xa9\x01\n" +
-	"\rcom.worker.v1B\vWorkerProtoP\x01ZFgithub.com/gilwong00/task-runner/internal/gen/proto/worker/v1;workerv1\xa2\x02\x03WXX\xaa\x02\tWorker.V1\xca\x02\tWorker\\V1\xe2\x02\x15Worker\\V1\\GPBMetadata\xea\x02\n" +
+	"\vReceiveTask\x12\x1d.worker.v1.ReceiveTaskRequest\x1a\x1e.worker.v1.ReceiveTaskResponseB\xa3\x01\n" +
+	"\rcom.worker.v1B\vWorkerProtoP\x01Z@github.com/gilwong00/task-runner/internal/gen/worker/v1;workerv1\xa2\x02\x03WXX\xaa\x02\tWorker.V1\xca\x02\tWorker\\V1\xe2\x02\x15Worker\\V1\\GPBMetadata\xea\x02\n" +
 	"Worker::V1b\x06proto3"
 
 var (
-	file_proto_worker_v1_worker_proto_rawDescOnce sync.Once
-	file_proto_worker_v1_worker_proto_rawDescData []byte
+	file_worker_v1_worker_proto_rawDescOnce sync.Once
+	file_worker_v1_worker_proto_rawDescData []byte
 )
 
-func file_proto_worker_v1_worker_proto_rawDescGZIP() []byte {
-	file_proto_worker_v1_worker_proto_rawDescOnce.Do(func() {
-		file_proto_worker_v1_worker_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_proto_worker_v1_worker_proto_rawDesc), len(file_proto_worker_v1_worker_proto_rawDesc)))
+func file_worker_v1_worker_proto_rawDescGZIP() []byte {
+	file_worker_v1_worker_proto_rawDescOnce.Do(func() {
+		file_worker_v1_worker_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_worker_v1_worker_proto_rawDesc), len(file_worker_v1_worker_proto_rawDesc)))
 	})
-	return file_proto_worker_v1_worker_proto_rawDescData
+	return file_worker_v1_worker_proto_rawDescData
 }
 
-var file_proto_worker_v1_worker_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_proto_worker_v1_worker_proto_goTypes = []any{
+var file_worker_v1_worker_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_worker_v1_worker_proto_goTypes = []any{
 	(*ReceiveTaskRequest)(nil),  // 0: worker.v1.ReceiveTaskRequest
 	(*ReceiveTaskResponse)(nil), // 1: worker.v1.ReceiveTaskResponse
 }
-var file_proto_worker_v1_worker_proto_depIdxs = []int32{
+var file_worker_v1_worker_proto_depIdxs = []int32{
 	0, // 0: worker.v1.WorkerService.ReceiveTask:input_type -> worker.v1.ReceiveTaskRequest
 	1, // 1: worker.v1.WorkerService.ReceiveTask:output_type -> worker.v1.ReceiveTaskResponse
 	1, // [1:2] is the sub-list for method output_type
@@ -188,26 +188,26 @@ var file_proto_worker_v1_worker_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_proto_worker_v1_worker_proto_init() }
-func file_proto_worker_v1_worker_proto_init() {
-	if File_proto_worker_v1_worker_proto != nil {
+func init() { file_worker_v1_worker_proto_init() }
+func file_worker_v1_worker_proto_init() {
+	if File_worker_v1_worker_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_worker_v1_worker_proto_rawDesc), len(file_proto_worker_v1_worker_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_worker_v1_worker_proto_rawDesc), len(file_worker_v1_worker_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_proto_worker_v1_worker_proto_goTypes,
-		DependencyIndexes: file_proto_worker_v1_worker_proto_depIdxs,
-		MessageInfos:      file_proto_worker_v1_worker_proto_msgTypes,
+		GoTypes:           file_worker_v1_worker_proto_goTypes,
+		DependencyIndexes: file_worker_v1_worker_proto_depIdxs,
+		MessageInfos:      file_worker_v1_worker_proto_msgTypes,
 	}.Build()
-	File_proto_worker_v1_worker_proto = out.File
-	file_proto_worker_v1_worker_proto_goTypes = nil
-	file_proto_worker_v1_worker_proto_depIdxs = nil
+	File_worker_v1_worker_proto = out.File
+	file_worker_v1_worker_proto_goTypes = nil
+	file_worker_v1_worker_proto_depIdxs = nil
 }

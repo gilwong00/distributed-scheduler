@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: proto/coordinator/v1/coordinator.proto
+// source: coordinator/v1/coordinator.proto
 
 package coordinatorv1
 
@@ -61,11 +61,11 @@ func (x TaskStatus) String() string {
 }
 
 func (TaskStatus) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto_coordinator_v1_coordinator_proto_enumTypes[0].Descriptor()
+	return file_coordinator_v1_coordinator_proto_enumTypes[0].Descriptor()
 }
 
 func (TaskStatus) Type() protoreflect.EnumType {
-	return &file_proto_coordinator_v1_coordinator_proto_enumTypes[0]
+	return &file_coordinator_v1_coordinator_proto_enumTypes[0]
 }
 
 func (x TaskStatus) Number() protoreflect.EnumNumber {
@@ -74,7 +74,7 @@ func (x TaskStatus) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use TaskStatus.Descriptor instead.
 func (TaskStatus) EnumDescriptor() ([]byte, []int) {
-	return file_proto_coordinator_v1_coordinator_proto_rawDescGZIP(), []int{0}
+	return file_coordinator_v1_coordinator_proto_rawDescGZIP(), []int{0}
 }
 
 // SubmitTaskRequest represents a request for submitting a task, containing the task's payload data.
@@ -87,7 +87,7 @@ type SubmitTaskRequest struct {
 
 func (x *SubmitTaskRequest) Reset() {
 	*x = SubmitTaskRequest{}
-	mi := &file_proto_coordinator_v1_coordinator_proto_msgTypes[0]
+	mi := &file_coordinator_v1_coordinator_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -99,7 +99,7 @@ func (x *SubmitTaskRequest) String() string {
 func (*SubmitTaskRequest) ProtoMessage() {}
 
 func (x *SubmitTaskRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_coordinator_v1_coordinator_proto_msgTypes[0]
+	mi := &file_coordinator_v1_coordinator_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -112,7 +112,7 @@ func (x *SubmitTaskRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SubmitTaskRequest.ProtoReflect.Descriptor instead.
 func (*SubmitTaskRequest) Descriptor() ([]byte, []int) {
-	return file_proto_coordinator_v1_coordinator_proto_rawDescGZIP(), []int{0}
+	return file_coordinator_v1_coordinator_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *SubmitTaskRequest) GetPayload() string {
@@ -135,7 +135,7 @@ type SubmitTaskResponse struct {
 
 func (x *SubmitTaskResponse) Reset() {
 	*x = SubmitTaskResponse{}
-	mi := &file_proto_coordinator_v1_coordinator_proto_msgTypes[1]
+	mi := &file_coordinator_v1_coordinator_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -147,7 +147,7 @@ func (x *SubmitTaskResponse) String() string {
 func (*SubmitTaskResponse) ProtoMessage() {}
 
 func (x *SubmitTaskResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_coordinator_v1_coordinator_proto_msgTypes[1]
+	mi := &file_coordinator_v1_coordinator_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -160,7 +160,7 @@ func (x *SubmitTaskResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SubmitTaskResponse.ProtoReflect.Descriptor instead.
 func (*SubmitTaskResponse) Descriptor() ([]byte, []int) {
-	return file_proto_coordinator_v1_coordinator_proto_rawDescGZIP(), []int{1}
+	return file_coordinator_v1_coordinator_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *SubmitTaskResponse) GetTaskId() string {
@@ -193,7 +193,7 @@ type UpdateTaskStatusRequest struct {
 
 func (x *UpdateTaskStatusRequest) Reset() {
 	*x = UpdateTaskStatusRequest{}
-	mi := &file_proto_coordinator_v1_coordinator_proto_msgTypes[2]
+	mi := &file_coordinator_v1_coordinator_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -205,7 +205,7 @@ func (x *UpdateTaskStatusRequest) String() string {
 func (*UpdateTaskStatusRequest) ProtoMessage() {}
 
 func (x *UpdateTaskStatusRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_coordinator_v1_coordinator_proto_msgTypes[2]
+	mi := &file_coordinator_v1_coordinator_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -218,7 +218,7 @@ func (x *UpdateTaskStatusRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateTaskStatusRequest.ProtoReflect.Descriptor instead.
 func (*UpdateTaskStatusRequest) Descriptor() ([]byte, []int) {
-	return file_proto_coordinator_v1_coordinator_proto_rawDescGZIP(), []int{2}
+	return file_coordinator_v1_coordinator_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *UpdateTaskStatusRequest) GetTaskId() string {
@@ -267,7 +267,7 @@ type UpdateTaskStatusResponse struct {
 
 func (x *UpdateTaskStatusResponse) Reset() {
 	*x = UpdateTaskStatusResponse{}
-	mi := &file_proto_coordinator_v1_coordinator_proto_msgTypes[3]
+	mi := &file_coordinator_v1_coordinator_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -279,7 +279,7 @@ func (x *UpdateTaskStatusResponse) String() string {
 func (*UpdateTaskStatusResponse) ProtoMessage() {}
 
 func (x *UpdateTaskStatusResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_coordinator_v1_coordinator_proto_msgTypes[3]
+	mi := &file_coordinator_v1_coordinator_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -292,7 +292,7 @@ func (x *UpdateTaskStatusResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateTaskStatusResponse.ProtoReflect.Descriptor instead.
 func (*UpdateTaskStatusResponse) Descriptor() ([]byte, []int) {
-	return file_proto_coordinator_v1_coordinator_proto_rawDescGZIP(), []int{3}
+	return file_coordinator_v1_coordinator_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *UpdateTaskStatusResponse) GetSuccess() bool {
@@ -317,7 +317,7 @@ type SendHeartbeatRequest struct {
 
 func (x *SendHeartbeatRequest) Reset() {
 	*x = SendHeartbeatRequest{}
-	mi := &file_proto_coordinator_v1_coordinator_proto_msgTypes[4]
+	mi := &file_coordinator_v1_coordinator_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -329,7 +329,7 @@ func (x *SendHeartbeatRequest) String() string {
 func (*SendHeartbeatRequest) ProtoMessage() {}
 
 func (x *SendHeartbeatRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_coordinator_v1_coordinator_proto_msgTypes[4]
+	mi := &file_coordinator_v1_coordinator_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -342,7 +342,7 @@ func (x *SendHeartbeatRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SendHeartbeatRequest.ProtoReflect.Descriptor instead.
 func (*SendHeartbeatRequest) Descriptor() ([]byte, []int) {
-	return file_proto_coordinator_v1_coordinator_proto_rawDescGZIP(), []int{4}
+	return file_coordinator_v1_coordinator_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *SendHeartbeatRequest) GetWorkerId() uint32 {
@@ -371,7 +371,7 @@ type SendHeartbeatResponse struct {
 
 func (x *SendHeartbeatResponse) Reset() {
 	*x = SendHeartbeatResponse{}
-	mi := &file_proto_coordinator_v1_coordinator_proto_msgTypes[5]
+	mi := &file_coordinator_v1_coordinator_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -383,7 +383,7 @@ func (x *SendHeartbeatResponse) String() string {
 func (*SendHeartbeatResponse) ProtoMessage() {}
 
 func (x *SendHeartbeatResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_coordinator_v1_coordinator_proto_msgTypes[5]
+	mi := &file_coordinator_v1_coordinator_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -396,7 +396,7 @@ func (x *SendHeartbeatResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SendHeartbeatResponse.ProtoReflect.Descriptor instead.
 func (*SendHeartbeatResponse) Descriptor() ([]byte, []int) {
-	return file_proto_coordinator_v1_coordinator_proto_rawDescGZIP(), []int{5}
+	return file_coordinator_v1_coordinator_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *SendHeartbeatResponse) GetAck() bool {
@@ -406,11 +406,11 @@ func (x *SendHeartbeatResponse) GetAck() bool {
 	return false
 }
 
-var File_proto_coordinator_v1_coordinator_proto protoreflect.FileDescriptor
+var File_coordinator_v1_coordinator_proto protoreflect.FileDescriptor
 
-const file_proto_coordinator_v1_coordinator_proto_rawDesc = "" +
+const file_coordinator_v1_coordinator_proto_rawDesc = "" +
 	"\n" +
-	"&proto/coordinator/v1/coordinator.proto\x12\x0ecoordinator.v1\"-\n" +
+	" coordinator/v1/coordinator.proto\x12\x0ecoordinator.v1\"-\n" +
 	"\x11SubmitTaskRequest\x12\x18\n" +
 	"\apayload\x18\x01 \x01(\tR\apayload\"G\n" +
 	"\x12SubmitTaskResponse\x12\x17\n" +
@@ -441,24 +441,24 @@ const file_proto_coordinator_v1_coordinator_proto_rawDesc = "" +
 	"\n" +
 	"SubmitTask\x12!.coordinator.v1.SubmitTaskRequest\x1a\".coordinator.v1.SubmitTaskResponse\"\x00\x12g\n" +
 	"\x10UpdateTaskStatus\x12'.coordinator.v1.UpdateTaskStatusRequest\x1a(.coordinator.v1.UpdateTaskStatusResponse\"\x00\x12\\\n" +
-	"\rSendHeartbeat\x12$.coordinator.v1.SendHeartbeatRequest\x1a%.coordinator.v1.SendHeartbeatResponseB\xd1\x01\n" +
-	"\x12com.coordinator.v1B\x10CoordinatorProtoP\x01ZPgithub.com/gilwong00/task-runner/internal/gen/proto/coordinator/v1;coordinatorv1\xa2\x02\x03CXX\xaa\x02\x0eCoordinator.V1\xca\x02\x0eCoordinator\\V1\xe2\x02\x1aCoordinator\\V1\\GPBMetadata\xea\x02\x0fCoordinator::V1b\x06proto3"
+	"\rSendHeartbeat\x12$.coordinator.v1.SendHeartbeatRequest\x1a%.coordinator.v1.SendHeartbeatResponseB\xcb\x01\n" +
+	"\x12com.coordinator.v1B\x10CoordinatorProtoP\x01ZJgithub.com/gilwong00/task-runner/internal/gen/coordinator/v1;coordinatorv1\xa2\x02\x03CXX\xaa\x02\x0eCoordinator.V1\xca\x02\x0eCoordinator\\V1\xe2\x02\x1aCoordinator\\V1\\GPBMetadata\xea\x02\x0fCoordinator::V1b\x06proto3"
 
 var (
-	file_proto_coordinator_v1_coordinator_proto_rawDescOnce sync.Once
-	file_proto_coordinator_v1_coordinator_proto_rawDescData []byte
+	file_coordinator_v1_coordinator_proto_rawDescOnce sync.Once
+	file_coordinator_v1_coordinator_proto_rawDescData []byte
 )
 
-func file_proto_coordinator_v1_coordinator_proto_rawDescGZIP() []byte {
-	file_proto_coordinator_v1_coordinator_proto_rawDescOnce.Do(func() {
-		file_proto_coordinator_v1_coordinator_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_proto_coordinator_v1_coordinator_proto_rawDesc), len(file_proto_coordinator_v1_coordinator_proto_rawDesc)))
+func file_coordinator_v1_coordinator_proto_rawDescGZIP() []byte {
+	file_coordinator_v1_coordinator_proto_rawDescOnce.Do(func() {
+		file_coordinator_v1_coordinator_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_coordinator_v1_coordinator_proto_rawDesc), len(file_coordinator_v1_coordinator_proto_rawDesc)))
 	})
-	return file_proto_coordinator_v1_coordinator_proto_rawDescData
+	return file_coordinator_v1_coordinator_proto_rawDescData
 }
 
-var file_proto_coordinator_v1_coordinator_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_proto_coordinator_v1_coordinator_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
-var file_proto_coordinator_v1_coordinator_proto_goTypes = []any{
+var file_coordinator_v1_coordinator_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_coordinator_v1_coordinator_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_coordinator_v1_coordinator_proto_goTypes = []any{
 	(TaskStatus)(0),                  // 0: coordinator.v1.TaskStatus
 	(*SubmitTaskRequest)(nil),        // 1: coordinator.v1.SubmitTaskRequest
 	(*SubmitTaskResponse)(nil),       // 2: coordinator.v1.SubmitTaskResponse
@@ -467,7 +467,7 @@ var file_proto_coordinator_v1_coordinator_proto_goTypes = []any{
 	(*SendHeartbeatRequest)(nil),     // 5: coordinator.v1.SendHeartbeatRequest
 	(*SendHeartbeatResponse)(nil),    // 6: coordinator.v1.SendHeartbeatResponse
 }
-var file_proto_coordinator_v1_coordinator_proto_depIdxs = []int32{
+var file_coordinator_v1_coordinator_proto_depIdxs = []int32{
 	0, // 0: coordinator.v1.UpdateTaskStatusRequest.status:type_name -> coordinator.v1.TaskStatus
 	1, // 1: coordinator.v1.CoordinatorService.SubmitTask:input_type -> coordinator.v1.SubmitTaskRequest
 	3, // 2: coordinator.v1.CoordinatorService.UpdateTaskStatus:input_type -> coordinator.v1.UpdateTaskStatusRequest
@@ -482,27 +482,27 @@ var file_proto_coordinator_v1_coordinator_proto_depIdxs = []int32{
 	0, // [0:1] is the sub-list for field type_name
 }
 
-func init() { file_proto_coordinator_v1_coordinator_proto_init() }
-func file_proto_coordinator_v1_coordinator_proto_init() {
-	if File_proto_coordinator_v1_coordinator_proto != nil {
+func init() { file_coordinator_v1_coordinator_proto_init() }
+func file_coordinator_v1_coordinator_proto_init() {
+	if File_coordinator_v1_coordinator_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_coordinator_v1_coordinator_proto_rawDesc), len(file_proto_coordinator_v1_coordinator_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_coordinator_v1_coordinator_proto_rawDesc), len(file_coordinator_v1_coordinator_proto_rawDesc)),
 			NumEnums:      1,
 			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_proto_coordinator_v1_coordinator_proto_goTypes,
-		DependencyIndexes: file_proto_coordinator_v1_coordinator_proto_depIdxs,
-		EnumInfos:         file_proto_coordinator_v1_coordinator_proto_enumTypes,
-		MessageInfos:      file_proto_coordinator_v1_coordinator_proto_msgTypes,
+		GoTypes:           file_coordinator_v1_coordinator_proto_goTypes,
+		DependencyIndexes: file_coordinator_v1_coordinator_proto_depIdxs,
+		EnumInfos:         file_coordinator_v1_coordinator_proto_enumTypes,
+		MessageInfos:      file_coordinator_v1_coordinator_proto_msgTypes,
 	}.Build()
-	File_proto_coordinator_v1_coordinator_proto = out.File
-	file_proto_coordinator_v1_coordinator_proto_goTypes = nil
-	file_proto_coordinator_v1_coordinator_proto_depIdxs = nil
+	File_coordinator_v1_coordinator_proto = out.File
+	file_coordinator_v1_coordinator_proto_goTypes = nil
+	file_coordinator_v1_coordinator_proto_depIdxs = nil
 }

@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"connectrpc.com/connect"
-	workerv1 "github.com/gilwong00/task-runner/internal/gen/proto/worker/v1"
+	workerv1 "github.com/gilwong00/task-runner/internal/gen/worker/v1"
 )
 
 func (s *workerService) ReceiveTask(

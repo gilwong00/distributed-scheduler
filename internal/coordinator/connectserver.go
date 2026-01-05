@@ -13,9 +13,9 @@ import (
 	"time"
 
 	"connectrpc.com/connect"
-	"github.com/gilwong00/task-runner/internal/gen/proto/coordinator/v1/coordinatorv1connect"
-	workerv1 "github.com/gilwong00/task-runner/internal/gen/proto/worker/v1"
-	"github.com/gilwong00/task-runner/internal/gen/proto/worker/v1/workerv1connect"
+	"github.com/gilwong00/task-runner/internal/gen/coordinator/v1/coordinatorv1connect"
+	workerv1 "github.com/gilwong00/task-runner/internal/gen/worker/v1"
+	"github.com/gilwong00/task-runner/internal/gen/worker/v1/workerv1connect"
 	"github.com/gilwong00/task-runner/internal/taskdb"
 	taskpostgres "github.com/gilwong00/task-runner/internal/taskdb/gen"
 	"github.com/jackc/pgx/v4/pgxpool"

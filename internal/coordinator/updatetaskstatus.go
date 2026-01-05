@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"connectrpc.com/connect"
-	coordinatorv1 "github.com/gilwong00/task-runner/internal/gen/proto/coordinator/v1"
+	coordinatorv1 "github.com/gilwong00/task-runner/internal/gen/coordinator/v1"
 )
 
 func (c *coordinatorService) UpdateTaskStatus(

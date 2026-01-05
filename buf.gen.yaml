@@ -6,8 +6,9 @@ managed:
       value: github.com/gilwong00/task-runner/internal/gen
 plugins:
   - remote: buf.build/protocolbuffers/go:v1.36.6
-    out: ./internal/gen
+    out: internal/gen
     opt: paths=source_relative
-  - remote: buf.build/connectrpc/go:v1.18.1
-    out: ./internal/gen
-    opt: paths=source_relative
+  - remote: buf.build/connectrpc/go:v1.19.1
+    out: internal/gen
+    opt:
+      - paths=source_relative

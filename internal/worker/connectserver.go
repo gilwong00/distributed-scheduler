@@ -13,10 +13,10 @@ import (
 	"time"
 
 	"connectrpc.com/connect"
-	coordinatorv1 "github.com/gilwong00/task-runner/internal/gen/proto/coordinator/v1"
-	"github.com/gilwong00/task-runner/internal/gen/proto/coordinator/v1/coordinatorv1connect"
-	workerv1 "github.com/gilwong00/task-runner/internal/gen/proto/worker/v1"
-	"github.com/gilwong00/task-runner/internal/gen/proto/worker/v1/workerv1connect"
+	coordinatorv1 "github.com/gilwong00/task-runner/internal/gen/coordinator/v1"
+	"github.com/gilwong00/task-runner/internal/gen/coordinator/v1/coordinatorv1connect"
+	workerv1 "github.com/gilwong00/task-runner/internal/gen/worker/v1"
+	"github.com/gilwong00/task-runner/internal/gen/worker/v1/workerv1connect"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )
