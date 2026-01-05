@@ -1,92 +1,33 @@
-// package workerservice
+// Package workerservice executes distributed tasks as part of a coordinated worker pool.
+package workerservice
 
-// import (
-// 	"context"
-// 	"fmt"
-// 	"log"
-// 	"net"
-// 	"os"
-// 	"os/signal"
-// 	"sync"
-// 	"syscall"
-// 	"time"
+import (
+	"time"
+)
 
-// 	pb "github.com/gilwong00/task-runner/proto/gen"
+const (
+	// taskProcessTime is how long each task takes to process.
+	taskProcessTime = 5 * time.Second
 
-// 	"google.golang.org/grpc"
-// )
+	// maxWorkerPoolSize is the number of concurrent task processors.
+	maxWorkerPoolSize = 5
+)
 
-// const (
-// 	taskProcessTime   = 5 * time.Second
-// 	maxWorkerPoolSize = 5 // Number of workers in the pool
-// )
+// WorkerService manages the worker lifecycle.
+// It registers with a coordinator, receives tasks, and processes them concurrently.
+type WorkerService interface {
+	// Start initializes the worker and blocks until shutdown.
+	// It connects to the coordinator, registers, and begins processing tasks.
+	Start() error
+}
 
-// type WorkerService struct {
-// 	pb.UnimplementedWorkerServiceServer
-// 	ctx               context.Context
-// 	workerServerPort  string
-// 	coordinatorPort   string
-// 	coordinatorClient *grpc.ClientConn
-// 	listener          net.Listener
-// 	grpcServer        *grpc.Server
-// 	cancel            context.CancelFunc
-// 	wg                sync.WaitGroup // WaitGroup to wait for all goroutines to finish
-// 	taskQueue         chan *pb.ReceiveTaskRequest
-// }
-
-// func NewService(workerServerPort string, coordinatorPort string) *WorkerService {
-// 	ctx, cancel := context.WithCancel(context.Background())
-// 	return &WorkerService{
-// 		workerServerPort: workerServerPort,
-// 		coordinatorPort:  coordinatorPort,
-// 		ctx:              ctx,
-// 		cancel:           cancel,
-// 		taskQueue:        make(chan *pb.ReceiveTaskRequest, 100), // queue to process all tasks received by the workers
-// 	}
-// }
-
-// func (w *WorkerService) Start() error {
-// 	w.startWorkerPool(maxWorkerPoolSize)
-// 	if err := w.startGRPCServer(); err != nil {
-// 		return fmt.Errorf("gRPC server start failed: %w", err)
-// 	}
-// 	return w.awaitShutdown()
-// }
-
-// // startWorkerPool starts a pool of worker goroutines.
-// func (w *WorkerService) startWorkerPool(totalWorkers int) {
-// 	for range totalWorkers {
-// 		w.wg.Add(1)
-// 		go w.worker()
-// 	}
-// }
-
-// func (w *WorkerService) awaitShutdown() error {
-// 	stop := make(chan os.Signal, 1)
-// 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
-// 	<-stop
-
-// 	w.stop()
-// 	return nil
-// }
-
-// // worker is the function run by each worker goroutine.
-// func (w *WorkerService) worker() {
-// 	defer w.wg.Done() // Signal this worker is done when the function returns.
-
-// 	// TODO: implement logic
-// }
-
-// func (w *WorkerService) stop() {
-// 	// Signal all goroutines to stop
-// 	w.cancel()
-// 	// Wait for all goroutines to finish
-// 	w.wg.Wait()
-// 	// close GRPC connection
-// 	w.closeGRPCConnection()
-// 	log.Println("Worker server stopped")
-// }
-
-// // TODO: implement sendHeartBeat method
-// // TODO: implement periodicHeartbeat method
-// // TODO: implement process task method
+// NewService creates a new worker that listens on workerServerPort
+// and connects to the coordinator at coordinatorPort.
+// If workerServerPort is empty, a random available port is used.
+func NewService(
+	workerServerPort string,
+	coordinatorHost string,
+	coordinatorPort string,
+) WorkerService {
+	return newService(workerServerPort, coordinatorHost, coordinatorPort)
+}

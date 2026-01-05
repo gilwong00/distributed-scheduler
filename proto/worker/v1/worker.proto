@@ -4,26 +4,37 @@ package worker.v1;
 
 // option go_package = "worker/v1";
 
-// WorkerService defines the methods for interacting with the worker service.
-// It includes the SubmitTask RPC, which sends a task to the worker and receives
-// a response with the task result.
+// WorkerService defines the RPC methods for worker nodes in a distributed task execution system.
+// Workers receive tasks from coordinators, process them, and send periodic heartbeats
+// to maintain their active status in the worker pool.
 service WorkerService {
-  // Sends a task to the worker and returns the task's response.
-  rpc ReceiveTask (ReceiveTaskRequest) returns (ReceiveTaskResponse) {}
+  // ReceiveTask is called by the coordinator to assign a task to this worker.
+  // The worker processes the task asynchronously and returns an acknowledgment.
+  // The actual task result is reported separately upon completion.
+  rpc ReceiveTask (ReceiveTaskRequest) returns (ReceiveTaskResponse);
 }
 
-// TaskRequest represents a request for a task, containing a unique task ID
-// and the associated payload data.
+// ReceiveTaskRequest contains the information needed for a worker to process a task.
+// It is sent from the coordinator to the worker when assigning work.
 message ReceiveTaskRequest {
-  string task_id = 1; // Unique identifier for the task.
-  string payload = 2; // Data associated with the task.
+  // task_id is the unique identifier for this task, used for tracking and status updates.
+  string task_id = 1;
+
+  // payload contains the task data or command to be executed by the worker.
+  // The format and content depend on the task type (e.g., shell command, function name, etc.).
+  string payload = 2;
 }
 
-// TaskResponse represents the response to a task request, including the task ID,
-// a message with additional information, and a success flag indicating if the task
-// was successfully processed.
+// ReceiveTaskResponse is the worker's acknowledgment that it received the task assignment.
+// This is not the final task result, but rather confirmation that the worker accepted the task.
 message ReceiveTaskResponse {
-  string task_id = 1; // Unique identifier for the task.
-  string message = 2; // Message providing additional information about the task.
-  bool   success = 3; // Flag indicating whether the task was successful.
+  // task_id echoes back the unique identifier of the received task.
+  string task_id = 1;
+
+  // message provides additional context about the task acceptance or any immediate issues.
+  string message = 2;
+
+  // success indicates whether the worker successfully accepted the task for processing.
+  // False may indicate the worker is overloaded or unable to accept new tasks.
+  bool success = 3;
 }

@@ -40,7 +40,9 @@ const (
 
 // WorkerServiceClient is a client for the worker.v1.WorkerService service.
 type WorkerServiceClient interface {
-	// Sends a task to the worker and returns the task's response.
+	// ReceiveTask is called by the coordinator to assign a task to this worker.
+	// The worker processes the task asynchronously and returns an acknowledgment.
+	// The actual task result is reported separately upon completion.
 	ReceiveTask(context.Context, *connect.Request[v1.ReceiveTaskRequest]) (*connect.Response[v1.ReceiveTaskResponse], error)
 }
 
@@ -76,7 +78,9 @@ func (c *workerServiceClient) ReceiveTask(ctx context.Context, req *connect.Requ
 
 // WorkerServiceHandler is an implementation of the worker.v1.WorkerService service.
 type WorkerServiceHandler interface {
-	// Sends a task to the worker and returns the task's response.
+	// ReceiveTask is called by the coordinator to assign a task to this worker.
+	// The worker processes the task asynchronously and returns an acknowledgment.
+	// The actual task result is reported separately upon completion.
 	ReceiveTask(context.Context, *connect.Request[v1.ReceiveTaskRequest]) (*connect.Response[v1.ReceiveTaskResponse], error)
 }
 

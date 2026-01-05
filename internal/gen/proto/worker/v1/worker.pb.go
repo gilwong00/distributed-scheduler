@@ -21,12 +21,15 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// TaskRequest represents a request for a task, containing a unique task ID
-// and the associated payload data.
+// ReceiveTaskRequest contains the information needed for a worker to process a task.
+// It is sent from the coordinator to the worker when assigning work.
 type ReceiveTaskRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	TaskId        string                 `protobuf:"bytes,1,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"` // Unique identifier for the task.
-	Payload       string                 `protobuf:"bytes,2,opt,name=payload,proto3" json:"payload,omitempty"`             // Data associated with the task.
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// task_id is the unique identifier for this task, used for tracking and status updates.
+	TaskId string `protobuf:"bytes,1,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"`
+	// payload contains the task data or command to be executed by the worker.
+	// The format and content depend on the task type (e.g., shell command, function name, etc.).
+	Payload       string `protobuf:"bytes,2,opt,name=payload,proto3" json:"payload,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -75,14 +78,17 @@ func (x *ReceiveTaskRequest) GetPayload() string {
 	return ""
 }
 
-// TaskResponse represents the response to a task request, including the task ID,
-// a message with additional information, and a success flag indicating if the task
-// was successfully processed.
+// ReceiveTaskResponse is the worker's acknowledgment that it received the task assignment.
+// This is not the final task result, but rather confirmation that the worker accepted the task.
 type ReceiveTaskResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	TaskId        string                 `protobuf:"bytes,1,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"` // Unique identifier for the task.
-	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`             // Message providing additional information about the task.
-	Success       bool                   `protobuf:"varint,3,opt,name=success,proto3" json:"success,omitempty"`            // Flag indicating whether the task was successful.
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// task_id echoes back the unique identifier of the received task.
+	TaskId string `protobuf:"bytes,1,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"`
+	// message provides additional context about the task acceptance or any immediate issues.
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	// success indicates whether the worker successfully accepted the task for processing.
+	// False may indicate the worker is overloaded or unable to accept new tasks.
+	Success       bool `protobuf:"varint,3,opt,name=success,proto3" json:"success,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,9 +155,9 @@ const file_proto_worker_v1_worker_proto_rawDesc = "" +
 	"\x13ReceiveTaskResponse\x12\x17\n" +
 	"\atask_id\x18\x01 \x01(\tR\x06taskId\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\x12\x18\n" +
-	"\asuccess\x18\x03 \x01(\bR\asuccess2_\n" +
-	"\rWorkerService\x12N\n" +
-	"\vReceiveTask\x12\x1d.worker.v1.ReceiveTaskRequest\x1a\x1e.worker.v1.ReceiveTaskResponse\"\x00B\xa9\x01\n" +
+	"\asuccess\x18\x03 \x01(\bR\asuccess2]\n" +
+	"\rWorkerService\x12L\n" +
+	"\vReceiveTask\x12\x1d.worker.v1.ReceiveTaskRequest\x1a\x1e.worker.v1.ReceiveTaskResponseB\xa9\x01\n" +
 	"\rcom.worker.v1B\vWorkerProtoP\x01ZFgithub.com/gilwong00/task-runner/internal/gen/proto/worker/v1;workerv1\xa2\x02\x03WXX\xaa\x02\tWorker.V1\xca\x02\tWorker\\V1\xe2\x02\x15Worker\\V1\\GPBMetadata\xea\x02\n" +
 	"Worker::V1b\x06proto3"
 

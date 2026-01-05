@@ -8,10 +8,10 @@ import (
 	coordinatorv1 "github.com/gilwong00/task-runner/internal/gen/proto/coordinator/v1"
 )
 
-func (c *coordinatorService) ReceiveHeartbeat(
+func (c *coordinatorService) SendHeartbeat(
 	ctx context.Context,
-	req *connect.Request[coordinatorv1.ReceiveHeartbeatRequest],
-) (*connect.Response[coordinatorv1.ReceiveHeartbeatResponse], error) {
+	req *connect.Request[coordinatorv1.SendHeartbeatRequest],
+) (*connect.Response[coordinatorv1.SendHeartbeatResponse], error) {
 	c.WorkerPoolMutex.Lock()
 	defer c.WorkerPoolMutex.Unlock()
 

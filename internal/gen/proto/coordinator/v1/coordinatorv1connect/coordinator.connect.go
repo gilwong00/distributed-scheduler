@@ -39,9 +39,9 @@ const (
 	// CoordinatorServiceUpdateTaskStatusProcedure is the fully-qualified name of the
 	// CoordinatorService's UpdateTaskStatus RPC.
 	CoordinatorServiceUpdateTaskStatusProcedure = "/coordinator.v1.CoordinatorService/UpdateTaskStatus"
-	// CoordinatorServiceReceiveHeartbeatProcedure is the fully-qualified name of the
-	// CoordinatorService's ReceiveHeartbeat RPC.
-	CoordinatorServiceReceiveHeartbeatProcedure = "/coordinator.v1.CoordinatorService/ReceiveHeartbeat"
+	// CoordinatorServiceSendHeartbeatProcedure is the fully-qualified name of the CoordinatorService's
+	// SendHeartbeat RPC.
+	CoordinatorServiceSendHeartbeatProcedure = "/coordinator.v1.CoordinatorService/SendHeartbeat"
 )
 
 // CoordinatorServiceClient is a client for the coordinator.v1.CoordinatorService service.
@@ -50,8 +50,10 @@ type CoordinatorServiceClient interface {
 	SubmitTask(context.Context, *connect.Request[v1.SubmitTaskRequest]) (*connect.Response[v1.SubmitTaskResponse], error)
 	// Updates the status of a task with a new status and time stamps.
 	UpdateTaskStatus(context.Context, *connect.Request[v1.UpdateTaskStatusRequest]) (*connect.Response[v1.UpdateTaskStatusResponse], error)
-	// Receives a heartbeat from a worker, allowing the worker to signal that it's still active.
-	ReceiveHeartbeat(context.Context, *connect.Request[v1.ReceiveHeartbeatRequest]) (*connect.Response[v1.ReceiveHeartbeatResponse], error)
+	// SendHeartbeat is called by the worker to inform the coordinator that it is still alive.
+	// Workers must send heartbeats at regular intervals to avoid being marked as inactive
+	// and removed from the worker pool. This is called FROM the worker TO the coordinator.
+	SendHeartbeat(context.Context, *connect.Request[v1.SendHeartbeatRequest]) (*connect.Response[v1.SendHeartbeatResponse], error)
 }
 
 // NewCoordinatorServiceClient constructs a client for the coordinator.v1.CoordinatorService
@@ -77,10 +79,10 @@ func NewCoordinatorServiceClient(httpClient connect.HTTPClient, baseURL string, 
 			connect.WithSchema(coordinatorServiceMethods.ByName("UpdateTaskStatus")),
 			connect.WithClientOptions(opts...),
 		),
-		receiveHeartbeat: connect.NewClient[v1.ReceiveHeartbeatRequest, v1.ReceiveHeartbeatResponse](
+		sendHeartbeat: connect.NewClient[v1.SendHeartbeatRequest, v1.SendHeartbeatResponse](
 			httpClient,
-			baseURL+CoordinatorServiceReceiveHeartbeatProcedure,
-			connect.WithSchema(coordinatorServiceMethods.ByName("ReceiveHeartbeat")),
+			baseURL+CoordinatorServiceSendHeartbeatProcedure,
+			connect.WithSchema(coordinatorServiceMethods.ByName("SendHeartbeat")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -90,7 +92,7 @@ func NewCoordinatorServiceClient(httpClient connect.HTTPClient, baseURL string, 
 type coordinatorServiceClient struct {
 	submitTask       *connect.Client[v1.SubmitTaskRequest, v1.SubmitTaskResponse]
 	updateTaskStatus *connect.Client[v1.UpdateTaskStatusRequest, v1.UpdateTaskStatusResponse]
-	receiveHeartbeat *connect.Client[v1.ReceiveHeartbeatRequest, v1.ReceiveHeartbeatResponse]
+	sendHeartbeat    *connect.Client[v1.SendHeartbeatRequest, v1.SendHeartbeatResponse]
 }
 
 // SubmitTask calls coordinator.v1.CoordinatorService.SubmitTask.
@@ -103,9 +105,9 @@ func (c *coordinatorServiceClient) UpdateTaskStatus(ctx context.Context, req *co
 	return c.updateTaskStatus.CallUnary(ctx, req)
 }
 
-// ReceiveHeartbeat calls coordinator.v1.CoordinatorService.ReceiveHeartbeat.
-func (c *coordinatorServiceClient) ReceiveHeartbeat(ctx context.Context, req *connect.Request[v1.ReceiveHeartbeatRequest]) (*connect.Response[v1.ReceiveHeartbeatResponse], error) {
-	return c.receiveHeartbeat.CallUnary(ctx, req)
+// SendHeartbeat calls coordinator.v1.CoordinatorService.SendHeartbeat.
+func (c *coordinatorServiceClient) SendHeartbeat(ctx context.Context, req *connect.Request[v1.SendHeartbeatRequest]) (*connect.Response[v1.SendHeartbeatResponse], error) {
+	return c.sendHeartbeat.CallUnary(ctx, req)
 }
 
 // CoordinatorServiceHandler is an implementation of the coordinator.v1.CoordinatorService service.
@@ -114,8 +116,10 @@ type CoordinatorServiceHandler interface {
 	SubmitTask(context.Context, *connect.Request[v1.SubmitTaskRequest]) (*connect.Response[v1.SubmitTaskResponse], error)
 	// Updates the status of a task with a new status and time stamps.
 	UpdateTaskStatus(context.Context, *connect.Request[v1.UpdateTaskStatusRequest]) (*connect.Response[v1.UpdateTaskStatusResponse], error)
-	// Receives a heartbeat from a worker, allowing the worker to signal that it's still active.
-	ReceiveHeartbeat(context.Context, *connect.Request[v1.ReceiveHeartbeatRequest]) (*connect.Response[v1.ReceiveHeartbeatResponse], error)
+	// SendHeartbeat is called by the worker to inform the coordinator that it is still alive.
+	// Workers must send heartbeats at regular intervals to avoid being marked as inactive
+	// and removed from the worker pool. This is called FROM the worker TO the coordinator.
+	SendHeartbeat(context.Context, *connect.Request[v1.SendHeartbeatRequest]) (*connect.Response[v1.SendHeartbeatResponse], error)
 }
 
 // NewCoordinatorServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -137,10 +141,10 @@ func NewCoordinatorServiceHandler(svc CoordinatorServiceHandler, opts ...connect
 		connect.WithSchema(coordinatorServiceMethods.ByName("UpdateTaskStatus")),
 		connect.WithHandlerOptions(opts...),
 	)
-	coordinatorServiceReceiveHeartbeatHandler := connect.NewUnaryHandler(
-		CoordinatorServiceReceiveHeartbeatProcedure,
-		svc.ReceiveHeartbeat,
-		connect.WithSchema(coordinatorServiceMethods.ByName("ReceiveHeartbeat")),
+	coordinatorServiceSendHeartbeatHandler := connect.NewUnaryHandler(
+		CoordinatorServiceSendHeartbeatProcedure,
+		svc.SendHeartbeat,
+		connect.WithSchema(coordinatorServiceMethods.ByName("SendHeartbeat")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/coordinator.v1.CoordinatorService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -149,8 +153,8 @@ func NewCoordinatorServiceHandler(svc CoordinatorServiceHandler, opts ...connect
 			coordinatorServiceSubmitTaskHandler.ServeHTTP(w, r)
 		case CoordinatorServiceUpdateTaskStatusProcedure:
 			coordinatorServiceUpdateTaskStatusHandler.ServeHTTP(w, r)
-		case CoordinatorServiceReceiveHeartbeatProcedure:
-			coordinatorServiceReceiveHeartbeatHandler.ServeHTTP(w, r)
+		case CoordinatorServiceSendHeartbeatProcedure:
+			coordinatorServiceSendHeartbeatHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -168,6 +172,6 @@ func (UnimplementedCoordinatorServiceHandler) UpdateTaskStatus(context.Context, 
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("coordinator.v1.CoordinatorService.UpdateTaskStatus is not implemented"))
 }
 
-func (UnimplementedCoordinatorServiceHandler) ReceiveHeartbeat(context.Context, *connect.Request[v1.ReceiveHeartbeatRequest]) (*connect.Response[v1.ReceiveHeartbeatResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("coordinator.v1.CoordinatorService.ReceiveHeartbeat is not implemented"))
+func (UnimplementedCoordinatorServiceHandler) SendHeartbeat(context.Context, *connect.Request[v1.SendHeartbeatRequest]) (*connect.Response[v1.SendHeartbeatResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("coordinator.v1.CoordinatorService.SendHeartbeat is not implemented"))
 }

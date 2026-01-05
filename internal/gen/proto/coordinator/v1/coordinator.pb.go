@@ -302,30 +302,33 @@ func (x *UpdateTaskStatusResponse) GetSuccess() bool {
 	return false
 }
 
-// ReceiveHeartbeatRequest represents a heartbeat message from a worker to the coordinator.
-// It includes the worker's unique ID and its address.
-type ReceiveHeartbeatRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	WorkerId      uint32                 `protobuf:"varint,1,opt,name=workerId,proto3" json:"workerId,omitempty"` // Unique identifier for the worker.
-	Address       string                 `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`    // Address of the worker.
+// SendHeartbeatRequest is sent by the worker to the coordinator to signal it is alive and active.
+// Regular heartbeats prevent the coordinator from marking the worker as inactive.
+type SendHeartbeatRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// worker_id is the unique identifier assigned to this worker by the coordinator during registration.
+	WorkerId uint32 `protobuf:"varint,1,opt,name=worker_id,json=workerId,proto3" json:"worker_id,omitempty"`
+	// address is the network address where this worker can be reached (e.g., "localhost:50052").
+	// This allows the coordinator to route tasks to the correct worker.
+	Address       string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ReceiveHeartbeatRequest) Reset() {
-	*x = ReceiveHeartbeatRequest{}
+func (x *SendHeartbeatRequest) Reset() {
+	*x = SendHeartbeatRequest{}
 	mi := &file_proto_coordinator_v1_coordinator_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ReceiveHeartbeatRequest) String() string {
+func (x *SendHeartbeatRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ReceiveHeartbeatRequest) ProtoMessage() {}
+func (*SendHeartbeatRequest) ProtoMessage() {}
 
-func (x *ReceiveHeartbeatRequest) ProtoReflect() protoreflect.Message {
+func (x *SendHeartbeatRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_coordinator_v1_coordinator_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -337,48 +340,49 @@ func (x *ReceiveHeartbeatRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ReceiveHeartbeatRequest.ProtoReflect.Descriptor instead.
-func (*ReceiveHeartbeatRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use SendHeartbeatRequest.ProtoReflect.Descriptor instead.
+func (*SendHeartbeatRequest) Descriptor() ([]byte, []int) {
 	return file_proto_coordinator_v1_coordinator_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *ReceiveHeartbeatRequest) GetWorkerId() uint32 {
+func (x *SendHeartbeatRequest) GetWorkerId() uint32 {
 	if x != nil {
 		return x.WorkerId
 	}
 	return 0
 }
 
-func (x *ReceiveHeartbeatRequest) GetAddress() string {
+func (x *SendHeartbeatRequest) GetAddress() string {
 	if x != nil {
 		return x.Address
 	}
 	return ""
 }
 
-// ReceiveHeartbeatResponse represents the response to a heartbeat message.
-// It includes an acknowledgment flag indicating whether the heartbeat was acknowledged.
-type ReceiveHeartbeatResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Acknowledged  bool                   `protobuf:"varint,1,opt,name=acknowledged,proto3" json:"acknowledged,omitempty"` // Flag indicating whether the heartbeat was acknowledged.
+// SendHeartbeatResponse is the coordinator's acknowledgment of the worker's heartbeat.
+type SendHeartbeatResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// ack confirms that the coordinator received and processed the heartbeat.
+	// Flag indicating whether the heartbeat was acknowledged.
+	Ack           bool `protobuf:"varint,1,opt,name=ack,proto3" json:"ack,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ReceiveHeartbeatResponse) Reset() {
-	*x = ReceiveHeartbeatResponse{}
+func (x *SendHeartbeatResponse) Reset() {
+	*x = SendHeartbeatResponse{}
 	mi := &file_proto_coordinator_v1_coordinator_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ReceiveHeartbeatResponse) String() string {
+func (x *SendHeartbeatResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ReceiveHeartbeatResponse) ProtoMessage() {}
+func (*SendHeartbeatResponse) ProtoMessage() {}
 
-func (x *ReceiveHeartbeatResponse) ProtoReflect() protoreflect.Message {
+func (x *SendHeartbeatResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_coordinator_v1_coordinator_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -390,14 +394,14 @@ func (x *ReceiveHeartbeatResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ReceiveHeartbeatResponse.ProtoReflect.Descriptor instead.
-func (*ReceiveHeartbeatResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use SendHeartbeatResponse.ProtoReflect.Descriptor instead.
+func (*SendHeartbeatResponse) Descriptor() ([]byte, []int) {
 	return file_proto_coordinator_v1_coordinator_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *ReceiveHeartbeatResponse) GetAcknowledged() bool {
+func (x *SendHeartbeatResponse) GetAck() bool {
 	if x != nil {
-		return x.Acknowledged
+		return x.Ack
 	}
 	return false
 }
@@ -420,24 +424,24 @@ const file_proto_coordinator_v1_coordinator_proto_rawDesc = "" +
 	"\fcompleted_at\x18\x04 \x01(\x03R\vcompletedAt\x12\x1b\n" +
 	"\tfailed_at\x18\x05 \x01(\x03R\bfailedAt\"4\n" +
 	"\x18UpdateTaskStatusResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess\"O\n" +
-	"\x17ReceiveHeartbeatRequest\x12\x1a\n" +
-	"\bworkerId\x18\x01 \x01(\rR\bworkerId\x12\x18\n" +
-	"\aaddress\x18\x02 \x01(\tR\aaddress\">\n" +
-	"\x18ReceiveHeartbeatResponse\x12\"\n" +
-	"\facknowledged\x18\x01 \x01(\bR\facknowledged*\x87\x01\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\"M\n" +
+	"\x14SendHeartbeatRequest\x12\x1b\n" +
+	"\tworker_id\x18\x01 \x01(\rR\bworkerId\x12\x18\n" +
+	"\aaddress\x18\x02 \x01(\tR\aaddress\")\n" +
+	"\x15SendHeartbeatResponse\x12\x10\n" +
+	"\x03ack\x18\x01 \x01(\bR\x03ack*\x87\x01\n" +
 	"\n" +
 	"TaskStatus\x12\x1a\n" +
 	"\x16TASKSTATUS_UNSPECIFIED\x10\x00\x12\x15\n" +
 	"\x11TASKSTATUS_QUEUED\x10\x01\x12\x16\n" +
 	"\x12TASKSTATUS_STARTED\x10\x02\x12\x17\n" +
 	"\x13TASKSTATUS_COMPLETE\x10\x03\x12\x15\n" +
-	"\x11TASKSTATUS_FAILED\x10\x042\xbd\x02\n" +
+	"\x11TASKSTATUS_FAILED\x10\x042\xb2\x02\n" +
 	"\x12CoordinatorService\x12U\n" +
 	"\n" +
 	"SubmitTask\x12!.coordinator.v1.SubmitTaskRequest\x1a\".coordinator.v1.SubmitTaskResponse\"\x00\x12g\n" +
-	"\x10UpdateTaskStatus\x12'.coordinator.v1.UpdateTaskStatusRequest\x1a(.coordinator.v1.UpdateTaskStatusResponse\"\x00\x12g\n" +
-	"\x10ReceiveHeartbeat\x12'.coordinator.v1.ReceiveHeartbeatRequest\x1a(.coordinator.v1.ReceiveHeartbeatResponse\"\x00B\xd1\x01\n" +
+	"\x10UpdateTaskStatus\x12'.coordinator.v1.UpdateTaskStatusRequest\x1a(.coordinator.v1.UpdateTaskStatusResponse\"\x00\x12\\\n" +
+	"\rSendHeartbeat\x12$.coordinator.v1.SendHeartbeatRequest\x1a%.coordinator.v1.SendHeartbeatResponseB\xd1\x01\n" +
 	"\x12com.coordinator.v1B\x10CoordinatorProtoP\x01ZPgithub.com/gilwong00/task-runner/internal/gen/proto/coordinator/v1;coordinatorv1\xa2\x02\x03CXX\xaa\x02\x0eCoordinator.V1\xca\x02\x0eCoordinator\\V1\xe2\x02\x1aCoordinator\\V1\\GPBMetadata\xea\x02\x0fCoordinator::V1b\x06proto3"
 
 var (
@@ -460,17 +464,17 @@ var file_proto_coordinator_v1_coordinator_proto_goTypes = []any{
 	(*SubmitTaskResponse)(nil),       // 2: coordinator.v1.SubmitTaskResponse
 	(*UpdateTaskStatusRequest)(nil),  // 3: coordinator.v1.UpdateTaskStatusRequest
 	(*UpdateTaskStatusResponse)(nil), // 4: coordinator.v1.UpdateTaskStatusResponse
-	(*ReceiveHeartbeatRequest)(nil),  // 5: coordinator.v1.ReceiveHeartbeatRequest
-	(*ReceiveHeartbeatResponse)(nil), // 6: coordinator.v1.ReceiveHeartbeatResponse
+	(*SendHeartbeatRequest)(nil),     // 5: coordinator.v1.SendHeartbeatRequest
+	(*SendHeartbeatResponse)(nil),    // 6: coordinator.v1.SendHeartbeatResponse
 }
 var file_proto_coordinator_v1_coordinator_proto_depIdxs = []int32{
 	0, // 0: coordinator.v1.UpdateTaskStatusRequest.status:type_name -> coordinator.v1.TaskStatus
 	1, // 1: coordinator.v1.CoordinatorService.SubmitTask:input_type -> coordinator.v1.SubmitTaskRequest
 	3, // 2: coordinator.v1.CoordinatorService.UpdateTaskStatus:input_type -> coordinator.v1.UpdateTaskStatusRequest
-	5, // 3: coordinator.v1.CoordinatorService.ReceiveHeartbeat:input_type -> coordinator.v1.ReceiveHeartbeatRequest
+	5, // 3: coordinator.v1.CoordinatorService.SendHeartbeat:input_type -> coordinator.v1.SendHeartbeatRequest
 	2, // 4: coordinator.v1.CoordinatorService.SubmitTask:output_type -> coordinator.v1.SubmitTaskResponse
 	4, // 5: coordinator.v1.CoordinatorService.UpdateTaskStatus:output_type -> coordinator.v1.UpdateTaskStatusResponse
-	6, // 6: coordinator.v1.CoordinatorService.ReceiveHeartbeat:output_type -> coordinator.v1.ReceiveHeartbeatResponse
+	6, // 6: coordinator.v1.CoordinatorService.SendHeartbeat:output_type -> coordinator.v1.SendHeartbeatResponse
 	4, // [4:7] is the sub-list for method output_type
 	1, // [1:4] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

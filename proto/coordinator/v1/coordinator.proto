@@ -23,8 +23,10 @@ service CoordinatorService {
   // Updates the status of a task with a new status and time stamps.
   rpc UpdateTaskStatus (UpdateTaskStatusRequest) returns (UpdateTaskStatusResponse) {}
 
-  // Receives a heartbeat from a worker, allowing the worker to signal that it's still active.
-  rpc ReceiveHeartbeat (ReceiveHeartbeatRequest) returns (ReceiveHeartbeatResponse) {}
+  // SendHeartbeat is called by the worker to inform the coordinator that it is still alive.
+  // Workers must send heartbeats at regular intervals to avoid being marked as inactive
+  // and removed from the worker pool. This is called FROM the worker TO the coordinator.
+  rpc SendHeartbeat (SendHeartbeatRequest) returns (SendHeartbeatResponse);
 }
 
 // SubmitTaskRequest represents a request for submitting a task, containing the task's payload data.
@@ -57,15 +59,20 @@ message UpdateTaskStatusResponse {
   bool success = 1; // Flag indicating whether the task status update was successful.
 }
 
-// ReceiveHeartbeatRequest represents a heartbeat message from a worker to the coordinator.
-// It includes the worker's unique ID and its address.
-message ReceiveHeartbeatRequest {
-  uint32 workerId = 1; // Unique identifier for the worker.
-  string address  = 2; // Address of the worker.
+// SendHeartbeatRequest is sent by the worker to the coordinator to signal it is alive and active.
+// Regular heartbeats prevent the coordinator from marking the worker as inactive.
+message SendHeartbeatRequest {
+  // worker_id is the unique identifier assigned to this worker by the coordinator during registration.
+  uint32 worker_id = 1;
+
+  // address is the network address where this worker can be reached (e.g., "localhost:50052").
+  // This allows the coordinator to route tasks to the correct worker.
+  string address = 2;
 }
 
-// ReceiveHeartbeatResponse represents the response to a heartbeat message.
-// It includes an acknowledgment flag indicating whether the heartbeat was acknowledged.
-message ReceiveHeartbeatResponse {
-  bool acknowledged = 1; // Flag indicating whether the heartbeat was acknowledged.
+// SendHeartbeatResponse is the coordinator's acknowledgment of the worker's heartbeat.
+message SendHeartbeatResponse {
+  // ack confirms that the coordinator received and processed the heartbeat.
+  // Flag indicating whether the heartbeat was acknowledged.
+  bool ack = 1;
 }
